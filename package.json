@@ -1,0 +1,177 @@
+{
+  "name": "vivid-life-theme",
+  "displayName": "Vivid Life Theme",
+  "description": "A multi-flavor color scheme system for VS Code. 4 flavors × 6 variants = 24 themes. WCAG AA verified.",
+  "version": "0.1.0",
+  "publisher": "vivid-life-theme",
+  "license": "MIT",
+  "author": {
+    "name": "Michael van Laar",
+    "email": "michael@van-laar.de"
+  },
+  "homepage": "https://github.com/vivid-life-theme/vivid-life-vs-code",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivid-life-theme/vivid-life-vs-code.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vivid-life-theme/vivid-life-vs-code/issues"
+  },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "keywords": [
+    "theme",
+    "color-theme",
+    "dark-theme",
+    "light-theme",
+    "wcag",
+    "accessibility",
+    "vivid-life"
+  ],
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#171717",
+    "theme": "dark"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepackage": "npm run build",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@vivid-life-theme/design-system": "^0.2.0",
+    "@vscode/vsce": "^3.0.0",
+    "prettier": "^3.3.0"
+  },
+  "contributes": {
+    "themes": [
+      {
+        "label": "Vivid Life · Midnight · Purple",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-midnight-purple.json"
+      },
+      {
+        "label": "Vivid Life · Midnight · Red",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-midnight-red.json"
+      },
+      {
+        "label": "Vivid Life · Midnight · Orange",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-midnight-orange.json"
+      },
+      {
+        "label": "Vivid Life · Midnight · Yellow",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-midnight-yellow.json"
+      },
+      {
+        "label": "Vivid Life · Midnight · Green",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-midnight-green.json"
+      },
+      {
+        "label": "Vivid Life · Midnight · Blue",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-midnight-blue.json"
+      },
+      {
+        "label": "Vivid Life · Twilight · Red",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-twilight-red.json"
+      },
+      {
+        "label": "Vivid Life · Twilight · Orange",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-twilight-orange.json"
+      },
+      {
+        "label": "Vivid Life · Twilight · Yellow",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-twilight-yellow.json"
+      },
+      {
+        "label": "Vivid Life · Twilight · Green",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-twilight-green.json"
+      },
+      {
+        "label": "Vivid Life · Twilight · Blue",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-twilight-blue.json"
+      },
+      {
+        "label": "Vivid Life · Twilight · Purple",
+        "uiTheme": "vs-dark",
+        "path": "./themes/vivid-life-twilight-purple.json"
+      },
+      {
+        "label": "Vivid Life · Dawn · Red",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-dawn-red.json"
+      },
+      {
+        "label": "Vivid Life · Dawn · Orange",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-dawn-orange.json"
+      },
+      {
+        "label": "Vivid Life · Dawn · Yellow",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-dawn-yellow.json"
+      },
+      {
+        "label": "Vivid Life · Dawn · Green",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-dawn-green.json"
+      },
+      {
+        "label": "Vivid Life · Dawn · Blue",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-dawn-blue.json"
+      },
+      {
+        "label": "Vivid Life · Dawn · Purple",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-dawn-purple.json"
+      },
+      {
+        "label": "Vivid Life · Noon · Red",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-noon-red.json"
+      },
+      {
+        "label": "Vivid Life · Noon · Orange",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-noon-orange.json"
+      },
+      {
+        "label": "Vivid Life · Noon · Yellow",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-noon-yellow.json"
+      },
+      {
+        "label": "Vivid Life · Noon · Green",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-noon-green.json"
+      },
+      {
+        "label": "Vivid Life · Noon · Blue",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-noon-blue.json"
+      },
+      {
+        "label": "Vivid Life · Noon · Purple",
+        "uiTheme": "vs",
+        "path": "./themes/vivid-life-noon-purple.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+.git/**
+.github/**
+.gitignore
+.vscodeignore
+.claude/**
+node_modules/**
+src/**
+build.mjs
+package-lock.json
+*.vsix
+.DS_Store
