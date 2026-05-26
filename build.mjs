@@ -28,7 +28,11 @@ for (const flavor of flavors) {
   for (const variant of variants) {
     const theme = buildTheme(flavor, variant, tokens);
     const fileName = `vivid-life-${flavor}-${variant}.json`;
-    writeFileSync(join(THEMES_DIR, fileName), JSON.stringify(theme, null, 2) + "\n", "utf8");
+    writeFileSync(
+      join(THEMES_DIR, fileName),
+      JSON.stringify(theme, null, 2) + "\n",
+      "utf8",
+    );
     count++;
   }
 }

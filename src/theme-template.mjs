@@ -39,7 +39,9 @@ function buildWorkbenchColors(tokens, flavor, variant) {
   const { surface, text, border, state, semantic, ansi } = f;
   const isDark = f.type === "dark";
   const accent = resolveAccent(tokens, flavor, variant);
-  const accentOn = isDark ? tokens.palette.gray["900"] : tokens.palette.gray["100"];
+  const accentOn = isDark
+    ? tokens.palette.gray["900"]
+    : tokens.palette.gray["100"];
   const subtleAlpha = isDark ? ALPHA.a30 : ALPHA.a40;
 
   return {
@@ -84,8 +86,14 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "editorBracketMatch.border": accent,
     "editorOverviewRuler.border": border.subtle,
     "editorOverviewRuler.findMatchForeground": withAlpha(accent, ALPHA.a60),
-    "editorOverviewRuler.rangeHighlightForeground": withAlpha(accent, ALPHA.a40),
-    "editorOverviewRuler.selectionHighlightForeground": withAlpha(accent, ALPHA.a40),
+    "editorOverviewRuler.rangeHighlightForeground": withAlpha(
+      accent,
+      ALPHA.a40,
+    ),
+    "editorOverviewRuler.selectionHighlightForeground": withAlpha(
+      accent,
+      ALPHA.a40,
+    ),
     "editorOverviewRuler.wordHighlightForeground": withAlpha(accent, ALPHA.a40),
     "editorOverviewRuler.modifiedForeground": semantic.info,
     "editorOverviewRuler.addedForeground": semantic.success,
@@ -175,7 +183,9 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBarItem.activeBackground": isDark ? "#ffffff26" : "#00000026",
     "statusBarItem.hoverBackground": isDark ? "#ffffff1a" : "#0000001a",
     "statusBarItem.prominentBackground": isDark ? "#00000033" : "#00000014",
-    "statusBarItem.prominentHoverBackground": isDark ? "#00000066" : "#00000026",
+    "statusBarItem.prominentHoverBackground": isDark
+      ? "#00000066"
+      : "#00000026",
     "statusBarItem.remoteBackground": accent,
     "statusBarItem.remoteForeground": accentOn,
     "statusBarItem.errorBackground": semantic.danger,
@@ -362,10 +372,22 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "diffEditor.removedTextBackground": withAlpha(semantic.danger, ALPHA.a15),
     "diffEditor.insertedLineBackground": withAlpha(semantic.success, ALPHA.a10),
     "diffEditor.removedLineBackground": withAlpha(semantic.danger, ALPHA.a10),
-    "diffEditorGutter.insertedLineBackground": withAlpha(semantic.success, ALPHA.a20),
-    "diffEditorGutter.removedLineBackground": withAlpha(semantic.danger, ALPHA.a20),
-    "diffEditorOverview.insertedForeground": withAlpha(semantic.success, ALPHA.a40),
-    "diffEditorOverview.removedForeground": withAlpha(semantic.danger, ALPHA.a40),
+    "diffEditorGutter.insertedLineBackground": withAlpha(
+      semantic.success,
+      ALPHA.a20,
+    ),
+    "diffEditorGutter.removedLineBackground": withAlpha(
+      semantic.danger,
+      ALPHA.a20,
+    ),
+    "diffEditorOverview.insertedForeground": withAlpha(
+      semantic.success,
+      ALPHA.a40,
+    ),
+    "diffEditorOverview.removedForeground": withAlpha(
+      semantic.danger,
+      ALPHA.a40,
+    ),
 
     // merge conflict
     "merge.currentHeaderBackground": withAlpha(semantic.info, ALPHA.a30),
@@ -472,8 +494,14 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "debugConsole.errorForeground": semantic.danger,
     "debugConsole.sourceForeground": text.fg_muted,
     "debugConsoleInputIcon.foreground": accent,
-    "editor.stackFrameHighlightBackground": withAlpha(semantic.warning, ALPHA.a15),
-    "editor.focusedStackFrameHighlightBackground": withAlpha(semantic.warning, ALPHA.a25),
+    "editor.stackFrameHighlightBackground": withAlpha(
+      semantic.warning,
+      ALPHA.a15,
+    ),
+    "editor.focusedStackFrameHighlightBackground": withAlpha(
+      semantic.warning,
+      ALPHA.a25,
+    ),
 
     // problems
     "problemsErrorIcon.foreground": semantic.danger,
@@ -595,7 +623,10 @@ function buildTokenColors(syntax, textFg) {
     },
     {
       name: "Template string expression delimiter",
-      scope: ["punctuation.definition.template-expression", "punctuation.section.embedded"],
+      scope: [
+        "punctuation.definition.template-expression",
+        "punctuation.section.embedded",
+      ],
       settings: { foreground: syntax.keyword },
     },
     {
@@ -783,7 +814,10 @@ function buildTokenColors(syntax, textFg) {
     },
     {
       name: "CSS property",
-      scope: ["support.type.property-name.css", "support.type.property-name.scss"],
+      scope: [
+        "support.type.property-name.css",
+        "support.type.property-name.scss",
+      ],
       settings: { foreground: syntax.attr },
     },
     {
@@ -824,12 +858,20 @@ function buildTokenColors(syntax, textFg) {
     },
     {
       name: "Markdown link",
-      scope: ["markup.underline.link", "string.other.link", "constant.other.reference.link"],
+      scope: [
+        "markup.underline.link",
+        "string.other.link",
+        "constant.other.reference.link",
+      ],
       settings: { foreground: syntax.tag },
     },
     {
       name: "Markdown inline code / fenced code",
-      scope: ["markup.inline.raw", "markup.fenced_code.block", "markup.raw.block"],
+      scope: [
+        "markup.inline.raw",
+        "markup.fenced_code.block",
+        "markup.raw.block",
+      ],
       settings: { foreground: syntax.string },
     },
     {
@@ -880,7 +922,10 @@ function buildTokenColors(syntax, textFg) {
     },
     {
       name: "YAML key",
-      scope: ["entity.name.tag.yaml", "string.unquoted.plain.out.yaml entity.name.tag.yaml"],
+      scope: [
+        "entity.name.tag.yaml",
+        "string.unquoted.plain.out.yaml entity.name.tag.yaml",
+      ],
       settings: { foreground: syntax.tag },
     },
   ];

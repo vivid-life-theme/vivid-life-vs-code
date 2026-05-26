@@ -17,7 +17,6 @@ Node.js + ESM. Reads tokens from `@vivid-life-theme/design-system`; emits 24 the
 | `.gitignore`                               | Git ignore patterns                                                     |
 | `package.json`                             | VS Code extension manifest + 24 `contributes.themes` entries            |
 | `.prettierignore`                          | Paths Prettier must skip — generated `themes/`, fonts, assets           |
-| `.prettierrc.json`                         | Prettier config (printWidth 100, trailingComma all)                     |
 | `scripts/sync-config-table.sh`             | Keeps this table in sync with the filesystem (called by pre-commit)     |
 | `.vscodeignore`                            | Paths `vsce package` should not bundle into the `.vsix`                 |
 
