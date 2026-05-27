@@ -68,9 +68,20 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "editor.selectionBackground": withAlpha(accent, ALPHA.a25),
     "editor.selectionHighlightBackground": withAlpha(accent, ALPHA.a15),
     "editor.inactiveSelectionBackground": withAlpha(accent, ALPHA.a15),
-    "editor.wordHighlightBackground": state.hover,
-    "editor.wordHighlightStrongBackground": state.active,
-    "editor.findMatchBackground": withAlpha(accent, ALPHA.a40),
+    // Word highlight (symbol-occurrences-at-cursor) uses cyan — palette-reserved
+    // outside variant_hues so it never collides with the selection accent.
+    // Two alphas distinguish read vs write access.
+    "editor.wordHighlightBackground": withAlpha(
+      tokens.palette.cyan[isDark ? "500" : "700"],
+      ALPHA.a25,
+    ),
+    "editor.wordHighlightStrongBackground": withAlpha(
+      tokens.palette.cyan[isDark ? "300" : "900"],
+      ALPHA.a40,
+    ),
+    // findMatch uses semantic.warning so the cursored match stands out
+    // against accent-tinted selection (which would otherwise collapse).
+    "editor.findMatchBackground": withAlpha(semantic.warning, ALPHA.a40),
     "editor.findMatchHighlightBackground": withAlpha(accent, ALPHA.a20),
     "editor.findRangeHighlightBackground": withAlpha(accent, ALPHA.a10),
     "editor.hoverHighlightBackground": withAlpha(accent, ALPHA.a15),
@@ -115,16 +126,18 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "editorGutter.addedBackground": semantic.success,
     "editorGutter.deletedBackground": semantic.danger,
 
-    // bracket pair colorization (6 variant hues, accent-shade per flavor)
+    // Bracket pair colorization. Level 1 (outermost) is neutral text.fg so the
+    // most-common pair doesn't shout; levels 2-6 cycle the variant hues. Purple
+    // is dropped from the rotation (it's the keyword color and would collide).
     ...(() => {
       const colors = bracketColors(tokens, flavor);
       return {
-        "editorBracketHighlight.foreground1": colors[0],
-        "editorBracketHighlight.foreground2": colors[1],
-        "editorBracketHighlight.foreground3": colors[2],
-        "editorBracketHighlight.foreground4": colors[3],
-        "editorBracketHighlight.foreground5": colors[4],
-        "editorBracketHighlight.foreground6": colors[5],
+        "editorBracketHighlight.foreground1": text.fg,
+        "editorBracketHighlight.foreground2": colors[0],
+        "editorBracketHighlight.foreground3": colors[1],
+        "editorBracketHighlight.foreground4": colors[2],
+        "editorBracketHighlight.foreground5": colors[3],
+        "editorBracketHighlight.foreground6": colors[4],
         "editorBracketHighlight.unexpectedBracket.foreground": semantic.danger,
       };
     })(),
@@ -154,7 +167,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "activityBar.background": surface.bg_sunk,
     "activityBar.foreground": text.fg,
     "activityBar.inactiveForeground": text.fg_subtle,
-    "activityBar.activeBorder": accent,
+    "activityBar.activeBorder": withAlpha(accent, ALPHA.a90),
     "activityBar.activeBackground": state.hover,
     "activityBar.border": border.subtle,
     "activityBarBadge.background": accent,
@@ -334,7 +347,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "terminal.border": border.subtle,
     "terminal.selectionBackground": withAlpha(accent, ALPHA.a30),
     "terminal.inactiveSelectionBackground": withAlpha(accent, ALPHA.a15),
-    "terminal.findMatchBackground": withAlpha(accent, ALPHA.a40),
+    "terminal.findMatchBackground": withAlpha(semantic.warning, ALPHA.a40),
     "terminal.findMatchHighlightBackground": withAlpha(accent, ALPHA.a20),
     "terminalCursor.foreground": accent,
     "terminalCursor.background": surface.bg,
