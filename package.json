@@ -40,6 +40,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
+    "test": "node --test src/theme-template.test.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepackage": "npm run build",
