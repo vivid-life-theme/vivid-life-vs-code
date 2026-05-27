@@ -1,6 +1,6 @@
 # Vivid Life Theme — VS Code
 
-A multi-flavor color theme for VS Code. **4 flavors × 6 variants = 24 themes**,
+A multi-flavor color theme for VS Code (Visual Studio Code). **4 flavors × 6 variants = 24 themes**,
 all WCAG AA verified. Generated from the
 [Vivid Life design-system foundation](https://github.com/vivid-life-theme/vivid-life-design-system)
 — colors, contrast ratios, and the syntax-token map all come from a single
