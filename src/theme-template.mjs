@@ -866,6 +866,26 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       settings: { foreground: syntax.keyword },
     },
 
+    // JSDoc / documentation comments
+    {
+      name: "JSDoc tag",
+      scope: [
+        "comment.block.documentation keyword",
+        "storage.type.class.jsdoc",
+      ],
+      settings: { foreground: syntax.keyword },
+    },
+    {
+      name: "JSDoc type reference",
+      scope: ["comment.block.documentation entity.name.type"],
+      settings: { foreground: syntax.function, fontStyle: "italic" },
+    },
+    {
+      name: "JSDoc parameter name",
+      scope: ["comment.block.documentation variable"],
+      settings: { foreground: syntax.number, fontStyle: "italic" },
+    },
+
     // Markdown
     {
       name: "Markdown heading",

@@ -87,3 +87,19 @@ test("Variable semantics", () => {
   assert.equal(binding.foreground, syntax.number);
   assert.equal(binding.fontStyle, "italic");
 });
+
+test("JSDoc coloring", () => {
+  const theme = buildTheme("midnight", "purple", tokens);
+  const syntax = tokens.flavors.midnight.syntax;
+
+  const tags = findRule(theme, "JSDoc tag");
+  assert.equal(tags.foreground, syntax.keyword);
+
+  const typeRef = findRule(theme, "JSDoc type reference");
+  assert.equal(typeRef.foreground, syntax.function);
+  assert.equal(typeRef.fontStyle, "italic");
+
+  const paramName = findRule(theme, "JSDoc parameter name");
+  assert.equal(paramName.foreground, syntax.number);
+  assert.equal(paramName.fontStyle, "italic");
+});
