@@ -211,8 +211,8 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBarItem.prominentHoverBackground": isDark
       ? "#00000066"
       : "#00000026",
-    "statusBarItem.remoteBackground": accent,
-    "statusBarItem.remoteForeground": accentOn,
+    "statusBarItem.remoteBackground": surface.bg_sunk,
+    "statusBarItem.remoteForeground": text.fg,
     "statusBarItem.errorBackground": semantic.danger,
     "statusBarItem.errorForeground": accentOn,
     "statusBarItem.warningBackground": semantic.warning,

@@ -159,3 +159,21 @@ test("Semantic token consistency", () => {
   assert.equal(sem.enum.fontStyle, "");
   assert.equal(sem.struct.fontStyle, "");
 });
+
+test("Status bar remote item uses bg_sunk and text.fg — all 4 flavors", () => {
+  const flavors = ["midnight", "twilight", "dawn", "noon"];
+  for (const flavor of flavors) {
+    const theme = buildTheme(flavor, "purple", tokens);
+    const f = tokens.flavors[flavor];
+    assert.equal(
+      theme.colors["statusBarItem.remoteBackground"],
+      f.surface.bg_sunk,
+      `${flavor}: remoteBackground should be bg_sunk (${f.surface.bg_sunk})`,
+    );
+    assert.equal(
+      theme.colors["statusBarItem.remoteForeground"],
+      f.text.fg,
+      `${flavor}: remoteForeground should be text.fg (${f.text.fg})`,
+    );
+  }
+});
