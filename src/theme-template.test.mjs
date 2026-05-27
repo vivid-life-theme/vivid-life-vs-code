@@ -52,3 +52,21 @@ test("Markdown inline formatting", () => {
   const linkUrl = findRule(theme, "Markdown link URL");
   assert.equal(linkUrl.foreground, syntax.string);
 });
+
+test("Markdown structural elements", () => {
+  const theme = buildTheme("midnight", "purple", tokens);
+  const syntax = tokens.flavors.midnight.syntax;
+
+  const quote = findRule(theme, "Markdown quote");
+  assert.equal(quote.foreground, syntax.type);
+  assert.equal(quote.fontStyle, "italic");
+
+  const bullet = findRule(theme, "Markdown list bullet");
+  assert.equal(bullet.foreground, syntax.tag);
+
+  const hr = findRule(theme, "Markdown horizontal rule");
+  assert.equal(hr.foreground, syntax.comment);
+
+  const headingPunct = findRule(theme, "Markdown heading punctuation");
+  assert.equal(headingPunct.foreground, syntax.comment);
+});

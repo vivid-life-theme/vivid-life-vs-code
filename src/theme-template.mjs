@@ -872,6 +872,11 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       settings: { foreground: syntax.keyword, fontStyle: "bold" },
     },
     {
+      name: "Markdown heading punctuation",
+      scope: ["punctuation.definition.heading.markdown"],
+      settings: { foreground: syntax.comment },
+    },
+    {
       name: "Markdown bold",
       scope: ["markup.bold", "punctuation.definition.bold"],
       settings: { foreground: syntax.number, fontStyle: "bold" },
@@ -917,16 +922,20 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
     {
       name: "Markdown quote",
       scope: ["markup.quote", "punctuation.definition.quote.begin"],
-      settings: { foreground: syntax.comment, fontStyle: "italic" },
+      settings: { foreground: syntax.type, fontStyle: "italic" },
     },
     {
       name: "Markdown list bullet",
       scope: [
+        "beginning.punctuation.definition.list.markdown",
         "punctuation.definition.list_item",
-        "markup.list.unnumbered.markdown",
-        "markup.list.numbered.markdown",
       ],
-      settings: { foreground: syntax.punct },
+      settings: { foreground: syntax.tag },
+    },
+    {
+      name: "Markdown horizontal rule",
+      scope: ["meta.separator.markdown"],
+      settings: { foreground: syntax.comment },
     },
 
     // Diff (in unified diff files)
