@@ -719,6 +719,7 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
         "variable.language.this",
         "variable.language.self",
         "variable.language.super",
+        "variable.language",
       ],
       settings: { foreground: syntax.constant, fontStyle: "italic" },
     },

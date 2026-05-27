@@ -70,3 +70,20 @@ test("Markdown structural elements", () => {
   const headingPunct = findRule(theme, "Markdown heading punctuation");
   assert.equal(headingPunct.foreground, syntax.comment);
 });
+
+test("Variable semantics", () => {
+  const theme = buildTheme("midnight", "purple", tokens);
+  const syntax = tokens.flavors.midnight.syntax;
+
+  const lang = findRule(theme, "Language pseudo-variables");
+  assert.equal(lang.foreground, syntax.keyword);
+  assert.equal(lang.fontStyle, "italic");
+
+  const param = findRule(theme, "Parameter");
+  assert.equal(param.foreground, syntax.number);
+  assert.equal(param.fontStyle, "italic");
+
+  const binding = findRule(theme, "Import/export binding");
+  assert.equal(binding.foreground, syntax.number);
+  assert.equal(binding.fontStyle, "italic");
+});
