@@ -189,19 +189,27 @@ Semantic tokens (LSP-level, override TextMate in modern editors) must stay consi
 
 ## 8 — Workbench: status bar remote item
 
-**Architectural note:** This is a workbench color change. The status bar background is `accent` (variant-dependent). The remote item must use a fixed semantic value that remains visually distinct across all 6 possible accent shades.
+**Architectural note:** This is a workbench color change. The status bar background is `accent` (variant-dependent). The remote item must use a value that remains visually distinct across all 6 accent shades × 4 flavors = 24 combinations, using only real foundation tokens (no magic numbers).
+
+**Why semantic green does not work here:**  
+Dawn and Noon use deep/dark accent shades (700–900 range). Any dark green remote background has near-zero contrast against those accents — Dawn+Green and Noon+Green would be identical at ratio 1.00 (#365314 on #365314). The visual mockup used during brainstorming showed Midnight+Purple only and did not reveal this problem. `#166534` (used in the mockup) is also not a foundation token — it is Tailwind green-800, which sits between green-700 and green-900 in the palette and fails all 12 Dawn/Noon combinations.
+
+**Verified approach — `bg_sunk` notch:**  
+`bg_sunk` is always an achromatic extreme (near-black for dark flavors, light-gray for light flavors). It passes all 24 combinations at comfortable contrast ratios because no chromatic accent is close to either extreme.
 
 **`statusBarItem.remoteBackground`**
 
-- Value: `semantic.success_bg` (deep green — `#166534` on all flavors)
+- Value: `surface.bg_sunk` per flavor
+  - Midnight: `#0a0a0a`, Twilight: `#171717`, Dawn: `#bdbdbd`, Noon: `#d4d4d4`
 - Previously: `accent` (indistinguishable from the bar)
 
 **`statusBarItem.remoteForeground`**
 
-- Value: `semantic.success` (lime — `#bef264` on all flavors)
+- Value: `text.fg` per flavor
+  - Midnight/Twilight: `#f5f5f5`, Dawn/Noon: `#171717`
 - Previously: `statusBar.foreground` (same as bar text)
 
-**Variant-independence verification:** The deep green background (`#166534`) is sufficiently dark and desaturated relative to all 6 accent shades (red, orange, yellow, green, blue, purple) at their respective flavor-assigned brightness levels to remain visually distinct in all 24 theme combinations.
+**Variant-independence verification:** Contrast ratio of `bg_sunk` vs each of the 24 accent colors was computed across all flavor × variant combinations. All pass (minimum ratio well above 1.5). `bg_sunk` and `text.fg` are both real foundation tokens — no magic numbers.
 
 ---
 
