@@ -199,8 +199,11 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBarItem.prominentHoverBackground": isDark
       ? "#00000066"
       : "#00000026",
-    "statusBarItem.remoteBackground": accent,
-    "statusBarItem.remoteForeground": accentOn,
+    // Remote indicator chip — surface.bg_sunk against the accent statusBar
+    // gives a recessed neutral chip. Using accent here (the obvious default)
+    // would make the chip invisible because the bar itself is accent.
+    "statusBarItem.remoteBackground": surface.bg_sunk,
+    "statusBarItem.remoteForeground": text.fg,
     "statusBarItem.errorBackground": semantic.danger,
     "statusBarItem.errorForeground": accentOn,
     "statusBarItem.warningBackground": semantic.warning,
