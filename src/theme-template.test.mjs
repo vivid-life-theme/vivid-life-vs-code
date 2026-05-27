@@ -29,3 +29,26 @@ test("buildTheme produces output for all 24 flavor×variant combinations", () =>
     }
   }
 });
+
+test("Markdown inline formatting", () => {
+  const theme = buildTheme("midnight", "purple", tokens);
+  const syntax = tokens.flavors.midnight.syntax;
+
+  const bold = findRule(theme, "Markdown bold");
+  assert.equal(bold.foreground, syntax.type);
+  assert.equal(bold.fontStyle, "bold");
+
+  const italic = findRule(theme, "Markdown italic");
+  assert.equal(italic.foreground, syntax.string);
+  assert.equal(italic.fontStyle, "italic");
+
+  const boldItalic = findRule(theme, "Markdown bold+italic");
+  assert.equal(boldItalic.foreground, syntax.type);
+  assert.equal(boldItalic.fontStyle, "bold italic");
+
+  const linkText = findRule(theme, "Markdown link text");
+  assert.equal(linkText.foreground, syntax.function);
+
+  const linkUrl = findRule(theme, "Markdown link URL");
+  assert.equal(linkUrl.foreground, syntax.string);
+});

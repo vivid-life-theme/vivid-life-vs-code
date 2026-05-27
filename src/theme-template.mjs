@@ -868,11 +868,7 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
     // Markdown
     {
       name: "Markdown heading",
-      scope: [
-        "markup.heading",
-        "entity.name.section.markdown",
-        "punctuation.definition.heading.markdown",
-      ],
+      scope: ["markup.heading", "entity.name.section.markdown"],
       settings: { foreground: syntax.keyword, fontStyle: "bold" },
     },
     {
@@ -886,13 +882,28 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       settings: { foreground: syntax.type, fontStyle: "italic" },
     },
     {
-      name: "Markdown link",
+      name: "Markdown bold+italic",
+      scope: [
+        "markup.bold.markdown markup.italic.markdown",
+        "markup.italic.markdown markup.bold.markdown",
+      ],
+      settings: { foreground: syntax.type, fontStyle: "bold italic" },
+    },
+    {
+      name: "Markdown link text",
+      scope: [
+        "string.other.link.description.markdown",
+        "string.other.link.title.markdown",
+      ],
+      settings: { foreground: syntax.function },
+    },
+    {
+      name: "Markdown link URL",
       scope: [
         "markup.underline.link",
-        "string.other.link",
-        "constant.other.reference.link",
+        "constant.other.reference.link.markdown",
       ],
-      settings: { foreground: syntax.tag },
+      settings: { foreground: syntax.string },
     },
     {
       name: "Markdown inline code / fenced code",
