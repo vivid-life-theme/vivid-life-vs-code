@@ -103,3 +103,22 @@ test("JSDoc coloring", () => {
   assert.equal(paramName.foreground, syntax.number);
   assert.equal(paramName.fontStyle, "italic");
 });
+
+test("Language-specific tokens", () => {
+  const theme = buildTheme("midnight", "purple", tokens);
+  const syntax = tokens.flavors.midnight.syntax;
+
+  const escape = findRule(theme, "Escape sequence");
+  assert.equal(escape.foreground, syntax.keyword);
+
+  const shellVar = findRule(theme, "Shell variable");
+  assert.equal(shellVar.foreground, syntax.keyword);
+
+  const yamlAlias = findRule(theme, "YAML alias");
+  assert.equal(yamlAlias.foreground, syntax.string);
+  assert.equal(yamlAlias.fontStyle, "italic underline");
+
+  const pyDoc = findRule(theme, "Python docstring");
+  assert.equal(pyDoc.foreground, syntax.comment);
+  assert.equal(pyDoc.fontStyle, "italic");
+});

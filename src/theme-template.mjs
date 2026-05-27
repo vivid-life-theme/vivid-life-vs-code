@@ -691,11 +691,15 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       scope: [
         "constant",
         "constant.character",
-        "constant.character.escape",
         "constant.other",
         "variable.other.constant",
       ],
       settings: { foreground: syntax.constant },
+    },
+    {
+      name: "Escape sequence",
+      scope: ["constant.character.escape"],
+      settings: { foreground: syntax.keyword },
     },
     {
       name: "Function",
@@ -810,6 +814,23 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
         "meta.brace",
       ],
       settings: { foreground: syntax.punct },
+    },
+
+    // Language-specific
+    {
+      name: "Shell variable",
+      scope: ["source.shell variable.other", "variable.other.normal.shell"],
+      settings: { foreground: syntax.keyword },
+    },
+    {
+      name: "YAML alias",
+      scope: ["variable.other.alias.yaml"],
+      settings: { foreground: syntax.string, fontStyle: "italic underline" },
+    },
+    {
+      name: "Python docstring",
+      scope: ["string.quoted.docstring.multi"],
+      settings: { foreground: syntax.comment, fontStyle: "italic" },
     },
 
     // HTML / JSX / XML
