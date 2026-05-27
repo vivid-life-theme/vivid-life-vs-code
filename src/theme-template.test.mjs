@@ -141,3 +141,21 @@ test("Structural and semantic cleanup", () => {
   assert.equal(deprecated.foreground, syntax.regex);
   assert.equal(deprecated.fontStyle, "italic");
 });
+
+test("Semantic token consistency", () => {
+  const theme = buildTheme("midnight", "purple", tokens);
+  const syntax = tokens.flavors.midnight.syntax;
+  const sem = theme.semanticTokenColors;
+
+  assert.equal(sem.parameter.foreground, syntax.number);
+  assert.equal(sem.parameter.fontStyle, "italic");
+
+  assert.equal(sem["variable.defaultLibrary"].foreground, syntax.keyword);
+  assert.equal(sem["variable.defaultLibrary"].fontStyle, "italic");
+
+  assert.equal(sem.class.fontStyle, "");
+  assert.equal(sem.type.fontStyle, "");
+  assert.equal(sem.interface.fontStyle, "");
+  assert.equal(sem.enum.fontStyle, "");
+  assert.equal(sem.struct.fontStyle, "");
+});

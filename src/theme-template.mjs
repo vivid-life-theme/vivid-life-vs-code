@@ -1086,11 +1086,11 @@ function buildSemanticTokenColors(syntax, textFg) {
     function: { foreground: syntax.function },
     method: { foreground: syntax.function },
     macro: { foreground: syntax.function },
-    class: { foreground: syntax.type },
-    interface: { foreground: syntax.type },
-    enum: { foreground: syntax.type },
-    struct: { foreground: syntax.type },
-    type: { foreground: syntax.type },
+    class: { foreground: syntax.type, fontStyle: "" },
+    interface: { foreground: syntax.type, fontStyle: "" },
+    enum: { foreground: syntax.type, fontStyle: "" },
+    struct: { foreground: syntax.type, fontStyle: "" },
+    type: { foreground: syntax.type, fontStyle: "" },
     typeParameter: { foreground: syntax.type },
     namespace: { foreground: syntax.type },
     decorator: { foreground: syntax.function },
@@ -1102,10 +1102,13 @@ function buildSemanticTokenColors(syntax, textFg) {
     regexp: { foreground: syntax.regex },
     comment: { foreground: syntax.comment, fontStyle: "italic" },
     "variable.readonly": { foreground: syntax.constant },
-    "variable.defaultLibrary": { foreground: syntax.function },
+    "variable.defaultLibrary": {
+      foreground: syntax.keyword,
+      fontStyle: "italic",
+    },
     "function.defaultLibrary": { foreground: syntax.function },
-    "class.defaultLibrary": { foreground: syntax.type },
-    "type.defaultLibrary": { foreground: syntax.type },
+    "class.defaultLibrary": { foreground: syntax.type, fontStyle: "" },
+    "type.defaultLibrary": { foreground: syntax.type, fontStyle: "" },
   };
 }
 
