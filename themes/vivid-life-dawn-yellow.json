@@ -108,7 +108,7 @@
     "statusBar.noFolderBackground": "#bdbdbd",
     "statusBar.noFolderForeground": "#171717",
     "statusBar.noFolderBorder": "#bdbdbd",
-    "statusBar.debuggingBackground": "#713f12",
+    "statusBar.debuggingBackground": "#7f1d1d",
     "statusBar.debuggingForeground": "#f5f5f5",
     "statusBar.debuggingBorder": "#bdbdbd",
     "statusBarItem.activeBackground": "#00000026",

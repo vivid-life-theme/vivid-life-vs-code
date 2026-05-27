@@ -44,6 +44,15 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     : tokens.palette.gray["100"];
   const subtleAlpha = isDark ? ALPHA.a30 : ALPHA.a40;
 
+  // Debug-state background must differ from accent so the debug bar (and the
+  // accent-colored remote chip sitting on it) don't dissolve. For yellow/orange
+  // variants the default semantic.warning would collide; use semantic.danger
+  // there instead. Foreground (accentOn) contrasts cleanly against either.
+  const debugBg =
+    variant === "yellow" || variant === "orange"
+      ? semantic.danger
+      : semantic.warning;
+
   return {
     // base
     foreground: text.fg,
@@ -193,7 +202,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBar.noFolderBackground": surface.bg_sunk,
     "statusBar.noFolderForeground": text.fg,
     "statusBar.noFolderBorder": border.subtle,
-    "statusBar.debuggingBackground": semantic.warning,
+    "statusBar.debuggingBackground": debugBg,
     "statusBar.debuggingForeground": accentOn,
     "statusBar.debuggingBorder": border.subtle,
     "statusBarItem.activeBackground": isDark ? "#ffffff26" : "#00000026",
