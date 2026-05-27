@@ -745,6 +745,7 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       scope: [
         "entity.name.type",
         "entity.name.class",
+        "entity.name.class.forward-decl",
         "entity.name.interface",
         "entity.name.enum",
         "entity.name.struct",
@@ -754,7 +755,7 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
         "support.type.primitive",
         "support.class",
       ],
-      settings: { foreground: syntax.type },
+      settings: { foreground: syntax.type, fontStyle: "" },
     },
     {
       name: "Namespace / module",
@@ -847,7 +848,19 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
     {
       name: "Attribute name",
       scope: ["entity.other.attribute-name", "meta.attribute"],
-      settings: { foreground: syntax.attr },
+      settings: { foreground: syntax.attr, fontStyle: "italic" },
+    },
+
+    // Invalid / deprecated
+    {
+      name: "Invalid",
+      scope: ["invalid"],
+      settings: { foreground: syntax.regex, fontStyle: "italic underline" },
+    },
+    {
+      name: "Deprecated",
+      scope: ["invalid.deprecated"],
+      settings: { foreground: syntax.regex, fontStyle: "italic" },
     },
 
     // CSS

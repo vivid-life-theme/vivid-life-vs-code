@@ -122,3 +122,22 @@ test("Language-specific tokens", () => {
   assert.equal(pyDoc.foreground, syntax.comment);
   assert.equal(pyDoc.fontStyle, "italic");
 });
+
+test("Structural and semantic cleanup", () => {
+  const theme = buildTheme("midnight", "purple", tokens);
+  const syntax = tokens.flavors.midnight.syntax;
+
+  const type = findRule(theme, "Type");
+  assert.equal(type.fontStyle, "");
+
+  const attr = findRule(theme, "Attribute name");
+  assert.equal(attr.fontStyle, "italic");
+
+  const invalid = findRule(theme, "Invalid");
+  assert.equal(invalid.foreground, syntax.regex);
+  assert.equal(invalid.fontStyle, "italic underline");
+
+  const deprecated = findRule(theme, "Deprecated");
+  assert.equal(deprecated.foreground, syntax.regex);
+  assert.equal(deprecated.fontStyle, "italic");
+});
