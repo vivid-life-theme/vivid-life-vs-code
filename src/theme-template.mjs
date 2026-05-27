@@ -183,10 +183,13 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "sideBarSectionHeader.foreground": text.fg_muted,
     "sideBarSectionHeader.border": border.subtle,
 
-    // status bar
-    "statusBar.background": accent,
-    "statusBar.foreground": accentOn,
-    "statusBar.border": border.subtle,
+    // status bar — neutral body so VS Code's own state signals (debugging
+    // background, error/warning chips) stand out clearly. Folder-open is
+    // signaled by a thin accent strip along the top edge via statusBar.border;
+    // statusBar.noFolderBorder kills the strip when no folder is open.
+    "statusBar.background": surface.bg_sunk,
+    "statusBar.foreground": text.fg,
+    "statusBar.border": accent,
     "statusBar.noFolderBackground": surface.bg_sunk,
     "statusBar.noFolderForeground": text.fg,
     "statusBar.noFolderBorder": border.subtle,
@@ -199,11 +202,8 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBarItem.prominentHoverBackground": isDark
       ? "#00000066"
       : "#00000026",
-    // Remote indicator chip — surface.bg_sunk against the accent statusBar
-    // gives a recessed neutral chip. Using accent here (the obvious default)
-    // would make the chip invisible because the bar itself is accent.
-    "statusBarItem.remoteBackground": surface.bg_sunk,
-    "statusBarItem.remoteForeground": text.fg,
+    "statusBarItem.remoteBackground": accent,
+    "statusBarItem.remoteForeground": accentOn,
     "statusBarItem.errorBackground": semantic.danger,
     "statusBarItem.errorForeground": accentOn,
     "statusBarItem.warningBackground": semantic.warning,
