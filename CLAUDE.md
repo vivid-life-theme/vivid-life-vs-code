@@ -16,6 +16,7 @@ Node.js + ESM. Reads tokens from `@vivid-life-theme/design-system`; emits 24 the
 | `.githooks/pre-commit`                     | Runs sync-config-table.sh on every commit                               |
 | `.github/workflows/claude-code-review.yml` | TODO: add description                                                   |
 | `.github/workflows/claude.yml`             | TODO: add description                                                   |
+| `.github/workflows/publish.yml`            | TODO: add description                                                   |
 | `.gitignore`                               | Git ignore patterns                                                     |
 | `package.json`                             | VS Code extension manifest + 24 `contributes.themes` entries            |
 | `.prettierignore`                          | Paths Prettier must skip — generated `themes/`, fonts, assets           |
