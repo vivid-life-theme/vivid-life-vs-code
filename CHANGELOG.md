@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-26
+
 ### Added
 
 - New syntax token scopes across all 24 themes: `doc_keyword`, `doc_type`, `doc_param` (JSDoc/TSDoc comment highlights), `invalid` (semantic danger + italic underline), and `invalid_deprecated`
