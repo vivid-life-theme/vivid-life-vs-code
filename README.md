@@ -6,6 +6,11 @@ all WCAG AA verified. Generated from the
 — colors, contrast ratios, and the syntax-token map all come from a single
 source of truth.
 
+![Vivid Life · Midnight · Blue](./images/screenshot-midnight-blue.png)
+![Vivid Life · Twilight · Blue](./images/screenshot-twilight-blue.png)
+![Vivid Life · Dawn · Blue](./images/screenshot-dawn-blue.png)
+![Vivid Life · Noon · Blue](./images/screenshot-noon-blue.png)
+
 ## Flavors
 
 In time-of-day order:
@@ -30,8 +35,6 @@ Noon · Yellow.
 From the VS Code Marketplace: search for **Vivid Life Theme**, install, then
 pick one of the 24 entries from `Preferences: Color Theme` (`Ctrl+K Ctrl+T`).
 
-The marketplace default screenshot is **Midnight · Purple**.
-
 ## Recommended companions
 
 - **File icons** — [Material Icon Theme](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme).
@@ -41,34 +44,20 @@ The marketplace default screenshot is **Midnight · Purple**.
   for the editor. The fallback stack still respects whatever monospaced
   font you have installed locally (Cascadia Code, JetBrains Mono, …).
 
-## Develop
+## Contributing
 
 ```bash
 npm install
 npm run build           # regenerates themes/ from @vivid-life-theme/design-system
 ```
 
-`build.mjs` reads `tokens.json` / `dist/tokens.js` from the foundation
-package, iterates 4 flavors × 6 variants, and writes one JSON per theme to
-`themes/`. The 24 contributes-entries in `package.json` are hand-maintained
-to match — keep them in sync.
-
 To preview locally: press `F5` in VS Code (Extension Development Host) and
 switch themes inside the dev window.
 
-To package a `.vsix`:
-
-```bash
-npm run package
-```
-
-## Foundation gaps
-
-If you spot a color, contrast, or syntax-slot mismatch that **isn't** a
-mapping bug in this port — i.e. a value missing from the design system
-itself — please open an issue against the
-[foundation repo](https://github.com/vivid-life-theme/vivid-life-design-system/issues),
-not here. Port-side workarounds get unmaintainable fast.
+If you spot a color, contrast, or syntax-slot mismatch that isn't a mapping
+bug in this port, please open an issue against the
+[design system repo](https://github.com/vivid-life-theme/vivid-life-design-system/issues)
+rather than here — port-side workarounds get unmaintainable fast.
 
 ## License
 
