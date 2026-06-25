@@ -12,6 +12,7 @@ Node.js + ESM. Reads tokens from `@vivid-life-theme/design-system`; emits 24 the
 | `.claudeignore`                            | Paths Claude Code should skip when indexing (`node_modules/`, `*.vsix`) |
 | `.claude/learnings.md`                     | TODO: add description                                                   |
 | `.claude/settings.json`                    | Permissions, PostToolUse Prettier hook, env defaults                    |
+| `.claude/skills/publish/SKILL.md`          | TODO: add description                                                   |
 | `.claude/skills/vivid-life-theme/SKILL.md` | Port-side skill: how to read foundation tokens for theme generation     |
 | `.githooks/pre-commit`                     | Runs sync-config-table.sh on every commit                               |
 | `.github/workflows/claude-code-review.yml` | TODO: add description                                                   |
