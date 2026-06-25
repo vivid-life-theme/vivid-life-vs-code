@@ -46,7 +46,7 @@
     "package": "vsce package"
   },
   "devDependencies": {
-    "@vivid-life-theme/design-system": "file:../vivid-life-design-system",
+    "@vivid-life-theme/design-system": "^0.3.0",
     "@vscode/vsce": "^3.9.1",
     "prettier": "^3.8.3"
   },
