@@ -14,6 +14,8 @@ Node.js + ESM. Reads tokens from `@vivid-life-theme/design-system`; emits 24 the
 | `.claude/settings.json`                    | Permissions, PostToolUse Prettier hook, env defaults                    |
 | `.claude/skills/vivid-life-theme/SKILL.md` | Port-side skill: how to read foundation tokens for theme generation     |
 | `.githooks/pre-commit`                     | Runs sync-config-table.sh on every commit                               |
+| `.github/workflows/claude-code-review.yml` | TODO: add description                                                   |
+| `.github/workflows/claude.yml`             | TODO: add description                                                   |
 | `.gitignore`                               | Git ignore patterns                                                     |
 | `package.json`                             | VS Code extension manifest + 24 `contributes.themes` entries            |
 | `.prettierignore`                          | Paths Prettier must skip — generated `themes/`, fonts, assets           |
