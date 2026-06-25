@@ -12,12 +12,12 @@ Node.js + ESM. Reads tokens from `@vivid-life-theme/design-system`; emits 24 the
 | `.claudeignore`                            | Paths Claude Code should skip when indexing (`node_modules/`, `*.vsix`) |
 | `.claude/learnings.md`                     | TODO: add description                                                   |
 | `.claude/settings.json`                    | Permissions, PostToolUse Prettier hook, env defaults                    |
-| `.claude/skills/publish/SKILL.md`          | TODO: add description                                                   |
+| `.claude/skills/publish/SKILL.md`          | `/publish` skill: version bump → CHANGELOG → tag → push                 |
 | `.claude/skills/vivid-life-theme/SKILL.md` | Port-side skill: how to read foundation tokens for theme generation     |
 | `.githooks/pre-commit`                     | Runs sync-config-table.sh on every commit                               |
 | `.github/workflows/claude-code-review.yml` | TODO: add description                                                   |
 | `.github/workflows/claude.yml`             | TODO: add description                                                   |
-| `.github/workflows/publish.yml`            | TODO: add description                                                   |
+| `.github/workflows/publish.yml`            | Publishes to VS Code Marketplace on `v*` tag push                       |
 | `.gitignore`                               | Git ignore patterns                                                     |
 | `package.json`                             | VS Code extension manifest + 24 `contributes.themes` entries            |
 | `.prettierignore`                          | Paths Prettier must skip — generated `themes/`, fonts, assets           |
