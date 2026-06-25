@@ -6,10 +6,40 @@ all WCAG AA verified. Generated from the
 — colors, contrast ratios, and the syntax-token map all come from a single
 source of truth.
 
-![Vivid Life · Midnight · Blue](./images/screenshot-midnight-blue.png)
-![Vivid Life · Twilight · Blue](./images/screenshot-twilight-blue.png)
-![Vivid Life · Dawn · Blue](./images/screenshot-dawn-blue.png)
-![Vivid Life · Noon · Blue](./images/screenshot-noon-blue.png)
+<table align="center">
+  <tr>
+    <td align="center">
+      <img
+        src="./images/screenshot-midnight-purple.png"
+        width="380"
+        alt="Midnight · Purple"
+      /><br /><sub>Midnight · Purple</sub>
+    </td>
+    <td align="center">
+      <img
+        src="./images/screenshot-twilight-yellow.png"
+        width="380"
+        alt="Twilight · Yellow"
+      /><br /><sub>Twilight · Yellow</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img
+        src="./images/screenshot-dawn-blue.png"
+        width="380"
+        alt="Dawn · Blue"
+      /><br /><sub>Dawn · Blue</sub>
+    </td>
+    <td align="center">
+      <img
+        src="./images/screenshot-noon-red.png"
+        width="380"
+        alt="Noon · Red"
+      /><br /><sub>Noon · Red</sub>
+    </td>
+  </tr>
+</table>
 
 ## Flavors
 
