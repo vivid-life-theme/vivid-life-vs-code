@@ -563,15 +563,24 @@
       }
     },
     {
-      "name": "Builtin function / this / self",
+      "name": "Builtin function",
       "scope": [
-        "support.function.builtin",
+        "support.function.builtin"
+      ],
+      "settings": {
+        "foreground": "#1d4ed8"
+      }
+    },
+    {
+      "name": "Language variable / this / self / super",
+      "scope": [
         "variable.language.this",
         "variable.language.self",
         "variable.language.super"
       ],
       "settings": {
-        "foreground": "#1d4ed8"
+        "foreground": "#c2410c",
+        "fontStyle": "italic"
       }
     },
     {
@@ -586,7 +595,7 @@
         "keyword.other.macro"
       ],
       "settings": {
-        "foreground": "#713f12"
+        "foreground": "#1d4ed8"
       }
     },
     {
@@ -651,7 +660,7 @@
         "meta.function.parameters variable"
       ],
       "settings": {
-        "foreground": "#171717",
+        "foreground": "#7c2d12",
         "fontStyle": "italic"
       }
     },
@@ -666,7 +675,7 @@
         "support.variable.property"
       ],
       "settings": {
-        "foreground": "#1d4ed8"
+        "foreground": "#171717"
       }
     },
     {
@@ -701,7 +710,7 @@
         "meta.attribute"
       ],
       "settings": {
-        "foreground": "#713f12"
+        "foreground": "#4d7c0f"
       }
     },
     {
@@ -725,7 +734,7 @@
         "support.type.property-name.scss"
       ],
       "settings": {
-        "foreground": "#713f12"
+        "foreground": "#4d7c0f"
       }
     },
     {
@@ -777,7 +786,7 @@
         "punctuation.definition.bold"
       ],
       "settings": {
-        "foreground": "#171717",
+        "foreground": "#c2410c",
         "fontStyle": "bold"
       }
     },
@@ -788,7 +797,7 @@
         "punctuation.definition.italic"
       ],
       "settings": {
-        "foreground": "#171717",
+        "foreground": "#713f12",
         "fontStyle": "italic"
       }
     },
@@ -894,6 +903,67 @@
       "settings": {
         "foreground": "#1d4ed8"
       }
+    },
+    {
+      "name": "Doc comment keyword",
+      "scope": [
+        "comment.block.documentation keyword"
+      ],
+      "settings": {
+        "foreground": "#7e22ce"
+      }
+    },
+    {
+      "name": "Doc comment type",
+      "scope": [
+        "comment.block.documentation entity.name.type"
+      ],
+      "settings": {
+        "foreground": "#713f12",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Doc comment param",
+      "scope": [
+        "comment.block.documentation variable"
+      ],
+      "settings": {
+        "foreground": "#7c2d12",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Invalid",
+      "scope": [
+        "invalid.illegal",
+        "invalid.broken"
+      ],
+      "settings": {
+        "foreground": "#7f1d1d",
+        "fontStyle": "italic underline"
+      }
+    },
+    {
+      "name": "Invalid deprecated",
+      "scope": [
+        "invalid.deprecated"
+      ],
+      "settings": {
+        "foreground": "#171717",
+        "fontStyle": "italic underline"
+      }
+    },
+    {
+      "name": "JS/TS variable constant fallthrough",
+      "scope": [
+        "variable.other.constant.js",
+        "variable.other.constant.ts",
+        "variable.other.constant.tsx"
+      ],
+      "settings": {
+        "foreground": "#171717"
+      }
     }
   ],
   "semanticTokenColors": {
@@ -901,11 +971,11 @@
       "foreground": "#171717"
     },
     "parameter": {
-      "foreground": "#171717",
+      "foreground": "#7c2d12",
       "fontStyle": "italic"
     },
     "property": {
-      "foreground": "#1d4ed8"
+      "foreground": "#171717"
     },
     "enumMember": {
       "foreground": "#c2410c"
@@ -941,7 +1011,7 @@
       "foreground": "#713f12"
     },
     "decorator": {
-      "foreground": "#713f12"
+      "foreground": "#1d4ed8"
     },
     "keyword": {
       "foreground": "#7e22ce"

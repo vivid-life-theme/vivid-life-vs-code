@@ -582,7 +582,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
 
 // TextMate scope groupings — keep stable across all 24 themes.
 // Each entry maps to one syntax slot from tokens.flavors[flavor].syntax.
-function buildTokenColors(syntax, textFg) {
+function buildTokenColors(syntax, textFg, semanticDanger) {
   return [
     {
       name: "Comment",
@@ -709,14 +709,18 @@ function buildTokenColors(syntax, textFg) {
       settings: { foreground: syntax.function },
     },
     {
-      name: "Builtin function / this / self",
+      name: "Builtin function",
+      scope: ["support.function.builtin"],
+      settings: { foreground: syntax.function },
+    },
+    {
+      name: "Language variable / this / self / super",
       scope: [
-        "support.function.builtin",
         "variable.language.this",
         "variable.language.self",
         "variable.language.super",
       ],
-      settings: { foreground: syntax.function },
+      settings: { foreground: syntax.constant, fontStyle: "italic" },
     },
     {
       name: "Decorator / macro",
@@ -729,7 +733,7 @@ function buildTokenColors(syntax, textFg) {
         "meta.preprocessor",
         "keyword.other.macro",
       ],
-      settings: { foreground: syntax.type },
+      settings: { foreground: syntax.function },
     },
     {
       name: "Type",
@@ -781,7 +785,7 @@ function buildTokenColors(syntax, textFg) {
     {
       name: "Parameter",
       scope: ["variable.parameter", "meta.function.parameters variable"],
-      settings: { foreground: textFg, fontStyle: "italic" },
+      settings: { foreground: syntax.parameter, fontStyle: "italic" },
     },
     {
       name: "Property",
@@ -793,7 +797,7 @@ function buildTokenColors(syntax, textFg) {
         "support.type.property-name",
         "support.variable.property",
       ],
-      settings: { foreground: syntax.tag },
+      settings: { foreground: textFg },
     },
     {
       name: "Punctuation",
@@ -874,12 +878,12 @@ function buildTokenColors(syntax, textFg) {
     {
       name: "Markdown bold",
       scope: ["markup.bold", "punctuation.definition.bold"],
-      settings: { foreground: textFg, fontStyle: "bold" },
+      settings: { foreground: syntax.number, fontStyle: "bold" },
     },
     {
       name: "Markdown italic",
       scope: ["markup.italic", "punctuation.definition.italic"],
-      settings: { foreground: textFg, fontStyle: "italic" },
+      settings: { foreground: syntax.type, fontStyle: "italic" },
     },
     {
       name: "Markdown link",
@@ -953,6 +957,46 @@ function buildTokenColors(syntax, textFg) {
       ],
       settings: { foreground: syntax.tag },
     },
+
+    // Doc comments (JSDoc / TSDoc / rustdoc / etc.)
+    {
+      name: "Doc comment keyword",
+      scope: ["comment.block.documentation keyword"],
+      settings: { foreground: syntax.keyword },
+    },
+    {
+      name: "Doc comment type",
+      scope: ["comment.block.documentation entity.name.type"],
+      settings: { foreground: syntax.type, fontStyle: "italic" },
+    },
+    {
+      name: "Doc comment param",
+      scope: ["comment.block.documentation variable"],
+      settings: { foreground: syntax.parameter, fontStyle: "italic" },
+    },
+
+    // Invalid / deprecated
+    {
+      name: "Invalid",
+      scope: ["invalid.illegal", "invalid.broken"],
+      settings: { foreground: semanticDanger, fontStyle: "italic underline" },
+    },
+    {
+      name: "Invalid deprecated",
+      scope: ["invalid.deprecated"],
+      settings: { foreground: textFg, fontStyle: "italic underline" },
+    },
+
+    // JS/TS: prevent const-colored variables from over-matching the constant slot
+    {
+      name: "JS/TS variable constant fallthrough",
+      scope: [
+        "variable.other.constant.js",
+        "variable.other.constant.ts",
+        "variable.other.constant.tsx",
+      ],
+      settings: { foreground: textFg },
+    },
   ];
 }
 
@@ -961,8 +1005,8 @@ function buildTokenColors(syntax, textFg) {
 function buildSemanticTokenColors(syntax, textFg) {
   return {
     variable: { foreground: textFg },
-    parameter: { foreground: textFg, fontStyle: "italic" },
-    property: { foreground: syntax.tag },
+    parameter: { foreground: syntax.parameter, fontStyle: "italic" },
+    property: { foreground: textFg },
     enumMember: { foreground: syntax.constant },
     function: { foreground: syntax.function },
     method: { foreground: syntax.function },
@@ -974,7 +1018,7 @@ function buildSemanticTokenColors(syntax, textFg) {
     type: { foreground: syntax.type },
     typeParameter: { foreground: syntax.type },
     namespace: { foreground: syntax.type },
-    decorator: { foreground: syntax.type },
+    decorator: { foreground: syntax.function },
     keyword: { foreground: syntax.keyword },
     modifier: { foreground: syntax.keyword },
     operator: { foreground: syntax.keyword },
@@ -1002,7 +1046,7 @@ export function buildTheme(flavor, variant, tokens) {
     type: f.type,
     semanticHighlighting: true,
     colors: buildWorkbenchColors(tokens, flavor, variant),
-    tokenColors: buildTokenColors(f.syntax, f.text.fg),
+    tokenColors: buildTokenColors(f.syntax, f.text.fg, f.semantic.danger),
     semanticTokenColors: buildSemanticTokenColors(f.syntax, f.text.fg),
   };
 }
