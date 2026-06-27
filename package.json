@@ -2,7 +2,7 @@
   "name": "vivid-life-theme",
   "displayName": "Vivid Life Theme",
   "description": "A multi-flavor color scheme system for VS Code (Visual Studio Code). 4 flavors × 6 variants = 24 themes. WCAG AA verified.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "vivid-life-theme",
   "license": "MIT",
   "author": {

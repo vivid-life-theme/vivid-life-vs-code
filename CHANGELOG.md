@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-28
+
+### Changed
+
+- Theme token rules are now data-driven: scope assignments, extended syntax tokens, and semantic token maps are generated directly from the design-system's `scope_recommendations`, `syntax_tokens.extended`, and `semantic_token_recommendations` — replacing ~500 lines of hand-written mappings and ensuring automatic alignment with the foundation going forward
+- design-system dependency bumped to 0.4.0; all 24 themes regenerated with updated tokens including the new `syntax.parameter` slot
+
 ## [0.1.1] - 2026-06-26
 
 ### Added
