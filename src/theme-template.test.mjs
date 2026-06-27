@@ -35,11 +35,11 @@ test("Markdown inline formatting", () => {
   const syntax = tokens.flavors.midnight.syntax;
 
   const bold = findRule(theme, "Markdown bold");
-  assert.equal(bold.foreground, syntax.type);
+  assert.equal(bold.foreground, syntax.number);
   assert.equal(bold.fontStyle, "bold");
 
   const italic = findRule(theme, "Markdown italic");
-  assert.equal(italic.foreground, syntax.string);
+  assert.equal(italic.foreground, syntax.type);
   assert.equal(italic.fontStyle, "italic");
 
   const boldItalic = findRule(theme, "Markdown bold+italic");
@@ -75,17 +75,13 @@ test("Variable semantics", () => {
   const theme = buildTheme("midnight", "purple", tokens);
   const syntax = tokens.flavors.midnight.syntax;
 
-  const lang = findRule(theme, "Language pseudo-variables");
-  assert.equal(lang.foreground, syntax.keyword);
+  const lang = findRule(theme, "Language variable / this / self / super");
+  assert.equal(lang.foreground, syntax.constant);
   assert.equal(lang.fontStyle, "italic");
 
   const param = findRule(theme, "Parameter");
-  assert.equal(param.foreground, syntax.number);
+  assert.equal(param.foreground, syntax.parameter);
   assert.equal(param.fontStyle, "italic");
-
-  const binding = findRule(theme, "Import/export binding");
-  assert.equal(binding.foreground, syntax.number);
-  assert.equal(binding.fontStyle, "italic");
 });
 
 test("JSDoc coloring", () => {
@@ -147,7 +143,7 @@ test("Semantic token consistency", () => {
   const syntax = tokens.flavors.midnight.syntax;
   const sem = theme.semanticTokenColors;
 
-  assert.equal(sem.parameter.foreground, syntax.number);
+  assert.equal(sem.parameter.foreground, syntax.parameter);
   assert.equal(sem.parameter.fontStyle, "italic");
 
   assert.equal(sem["variable.defaultLibrary"].foreground, syntax.keyword);

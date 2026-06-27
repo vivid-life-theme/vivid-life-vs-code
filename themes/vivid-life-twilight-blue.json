@@ -671,6 +671,7 @@
         "meta.function.parameters variable"
       ],
       "settings": {
+        "foreground": "#f97316",
         "fontStyle": "italic"
       }
     },
@@ -750,7 +751,7 @@
         "meta.attribute"
       ],
       "settings": {
-        "foreground": "#eab308",
+        "foreground": "#bef264",
         "fontStyle": "italic"
       }
     },
@@ -795,7 +796,7 @@
         "support.type.property-name.scss"
       ],
       "settings": {
-        "foreground": "#eab308"
+        "foreground": "#bef264"
       }
     },
     {
@@ -1056,6 +1057,7 @@
         "comment.block.documentation variable"
       ],
       "settings": {
+        "foreground": "#f97316",
         "fontStyle": "italic"
       }
     },
@@ -1097,6 +1099,7 @@
       "foreground": "#f5f5f5"
     },
     "parameter": {
+      "foreground": "#f97316",
       "fontStyle": "italic"
     },
     "property": {
