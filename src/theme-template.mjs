@@ -34,6 +34,35 @@ function bracketColors(tokens, flavor) {
   });
 }
 
+function resolveColor(key, syntax, textFg, semanticDanger) {
+  if (!key || key === "fg") return textFg;
+  if (key === "semantic.danger") return semanticDanger;
+  return syntax[key] ?? textFg;
+}
+
+function resolveExt(ext) {
+  if (!ext || typeof ext === "string")
+    return { color: ext ?? "fg", styles: [] };
+  return { color: ext.color ?? "fg", styles: ext.style ?? [] };
+}
+
+function buildGeneratedTokenRules(
+  scopeRecs,
+  extended,
+  syntax,
+  textFg,
+  semanticDanger,
+) {
+  return Object.entries(scopeRecs).map(([key, scopes]) => {
+    const { color, styles } = resolveExt(extended[key] ?? key);
+    const settings = {
+      foreground: resolveColor(color, syntax, textFg, semanticDanger),
+    };
+    if (styles.length) settings.fontStyle = styles.join(" ");
+    return { name: key, scope: scopes, settings };
+  });
+}
+
 function buildWorkbenchColors(tokens, flavor, variant) {
   const f = tokens.flavors[flavor];
   const { surface, text, border, state, semantic, ansi } = f;
@@ -580,74 +609,17 @@ function buildWorkbenchColors(tokens, flavor, variant) {
   };
 }
 
-// TextMate scope groupings — keep stable across all 24 themes.
-// Each entry maps to one syntax slot from tokens.flavors[flavor].syntax.
-function buildTokenColors(syntax, textFg, semanticDanger) {
+function buildTokenColors(scopeRecs, extended, syntax, textFg, semanticDanger) {
   return [
+    ...buildGeneratedTokenRules(
+      scopeRecs,
+      extended,
+      syntax,
+      textFg,
+      semanticDanger,
+    ),
     {
-      name: "Comment",
-      scope: ["comment", "punctuation.definition.comment", "string.comment"],
-      settings: { foreground: syntax.comment, fontStyle: "italic" },
-    },
-    {
-      name: "Shebang",
-      scope: ["comment.line.shebang"],
-      settings: { foreground: syntax.comment },
-    },
-    {
-      name: "Keyword",
-      scope: [
-        "keyword",
-        "keyword.control",
-        "keyword.control.flow",
-        "keyword.control.import",
-        "keyword.control.from",
-        "keyword.control.export",
-        "keyword.control.conditional",
-        "keyword.control.loop",
-        "keyword.other",
-        "keyword.operator.expression",
-        "keyword.operator.new",
-        "keyword.operator.delete",
-        "keyword.operator.logical",
-        "keyword.operator.word",
-        "storage",
-        "storage.type",
-        "storage.modifier",
-        "modifier",
-      ],
-      settings: { foreground: syntax.keyword },
-    },
-    {
-      name: "Operator",
-      scope: [
-        "keyword.operator",
-        "keyword.operator.arithmetic",
-        "keyword.operator.assignment",
-        "keyword.operator.comparison",
-        "keyword.operator.relational",
-        "punctuation.accessor",
-      ],
-      settings: { foreground: syntax.keyword },
-    },
-    {
-      name: "String",
-      scope: [
-        "string",
-        "string.quoted",
-        "string.quoted.single",
-        "string.quoted.double",
-        "string.quoted.triple",
-        "string.template",
-        "string.unquoted",
-        "punctuation.definition.string",
-        "punctuation.definition.string.begin",
-        "punctuation.definition.string.end",
-      ],
-      settings: { foreground: syntax.string },
-    },
-    {
-      name: "Template string expression delimiter",
+      name: "Template string delimiter",
       scope: [
         "punctuation.definition.template-expression",
         "punctuation.section.embedded",
@@ -655,169 +627,10 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       settings: { foreground: syntax.keyword },
     },
     {
-      name: "Regular Expression",
-      scope: [
-        "string.regexp",
-        "punctuation.definition.string.regexp",
-        "constant.other.character-class.regexp",
-        "constant.character.escape.regexp",
-        "keyword.control.anchor.regexp",
-        "keyword.operator.quantifier.regexp",
-      ],
-      settings: { foreground: syntax.regex },
-    },
-    {
-      name: "Number",
-      scope: [
-        "constant.numeric",
-        "constant.numeric.integer",
-        "constant.numeric.float",
-        "constant.numeric.hex",
-      ],
-      settings: { foreground: syntax.number },
-    },
-    {
-      name: "Boolean / null / language constant",
-      scope: [
-        "constant.language",
-        "constant.language.boolean",
-        "constant.language.null",
-        "constant.language.undefined",
-      ],
-      settings: { foreground: syntax.constant },
-    },
-    {
-      name: "Constant",
-      scope: [
-        "constant",
-        "constant.character",
-        "constant.other",
-        "variable.other.constant",
-      ],
-      settings: { foreground: syntax.constant },
-    },
-    {
       name: "Escape sequence",
       scope: ["constant.character.escape"],
       settings: { foreground: syntax.keyword },
     },
-    {
-      name: "Function",
-      scope: [
-        "entity.name.function",
-        "meta.function-call entity.name.function",
-        "meta.function-call.generic",
-        "support.function",
-        "variable.function",
-      ],
-      settings: { foreground: syntax.function },
-    },
-    {
-      name: "Builtin function",
-      scope: ["support.function.builtin"],
-      settings: { foreground: syntax.function },
-    },
-    {
-      name: "Language variable / this / self / super",
-      scope: [
-        "variable.language.this",
-        "variable.language.self",
-        "variable.language.super",
-        "variable.language",
-      ],
-      settings: { foreground: syntax.constant, fontStyle: "italic" },
-    },
-    {
-      name: "Decorator / macro",
-      scope: [
-        "meta.decorator",
-        "meta.decorator entity.name.function",
-        "punctuation.decorator",
-        "entity.name.function.decorator",
-        "entity.name.function.macro",
-        "meta.preprocessor",
-        "keyword.other.macro",
-      ],
-      settings: { foreground: syntax.function },
-    },
-    {
-      name: "Type",
-      scope: [
-        "entity.name.type",
-        "entity.name.class",
-        "entity.name.class.forward-decl",
-        "entity.name.interface",
-        "entity.name.enum",
-        "entity.name.struct",
-        "entity.name.union",
-        "entity.other.inherited-class",
-        "support.type",
-        "support.type.primitive",
-        "support.class",
-      ],
-      settings: { foreground: syntax.type, fontStyle: "" },
-    },
-    {
-      name: "Namespace / module",
-      scope: [
-        "entity.name.namespace",
-        "entity.name.module",
-        "entity.name.package",
-        "support.module",
-      ],
-      settings: { foreground: syntax.type },
-    },
-    {
-      name: "Lifetime (Rust)",
-      scope: [
-        "storage.modifier.lifetime",
-        "entity.name.lifetime",
-        "punctuation.definition.lifetime",
-      ],
-      settings: { foreground: syntax.constant },
-    },
-    {
-      name: "Variable",
-      scope: [
-        "variable",
-        "variable.other",
-        "variable.other.readwrite",
-        "variable.other.object",
-        "variable.other.object.property",
-        "meta.definition.variable",
-      ],
-      settings: { foreground: textFg },
-    },
-    {
-      name: "Parameter",
-      scope: ["variable.parameter", "meta.function.parameters variable"],
-      settings: { foreground: syntax.parameter, fontStyle: "italic" },
-    },
-    {
-      name: "Property",
-      scope: [
-        "variable.other.property",
-        "variable.other.object.property",
-        "meta.object-literal.key",
-        "meta.object.member",
-        "support.type.property-name",
-        "support.variable.property",
-      ],
-      settings: { foreground: textFg },
-    },
-    {
-      name: "Punctuation",
-      scope: [
-        "punctuation",
-        "punctuation.separator",
-        "punctuation.terminator",
-        "punctuation.section",
-        "meta.brace",
-      ],
-      settings: { foreground: syntax.punct },
-    },
-
-    // Language-specific
     {
       name: "Shell variable",
       scope: ["source.shell variable.other", "variable.other.normal.shell"],
@@ -833,113 +646,10 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       scope: ["string.quoted.docstring.multi"],
       settings: { foreground: syntax.comment, fontStyle: "italic" },
     },
-
-    // HTML / JSX / XML
-    {
-      name: "Tag",
-      scope: [
-        "entity.name.tag",
-        "punctuation.definition.tag",
-        "meta.tag.sgml",
-        "support.class.component",
-      ],
-      settings: { foreground: syntax.tag },
-    },
-    {
-      name: "Attribute name",
-      scope: ["entity.other.attribute-name", "meta.attribute"],
-      settings: { foreground: syntax.attr, fontStyle: "italic" },
-    },
-
-    // Invalid / deprecated
-    {
-      name: "Invalid",
-      scope: ["invalid"],
-      settings: { foreground: syntax.regex, fontStyle: "italic underline" },
-    },
-    {
-      name: "Deprecated",
-      scope: ["invalid.deprecated"],
-      settings: { foreground: syntax.regex, fontStyle: "italic" },
-    },
-
-    // CSS
-    {
-      name: "CSS selector",
-      scope: [
-        "entity.name.tag.css",
-        "entity.name.tag.scss",
-        "entity.other.attribute-name.id.css",
-        "entity.other.attribute-name.class.css",
-        "entity.other.attribute-name.pseudo-class",
-        "entity.other.attribute-name.pseudo-element",
-      ],
-      settings: { foreground: syntax.tag },
-    },
-    {
-      name: "CSS property",
-      scope: [
-        "support.type.property-name.css",
-        "support.type.property-name.scss",
-      ],
-      settings: { foreground: syntax.attr },
-    },
-    {
-      name: "CSS unit",
-      scope: ["keyword.other.unit", "constant.numeric.css keyword.other.unit"],
-      settings: { foreground: syntax.number },
-    },
-    {
-      name: "CSS color (hex)",
-      scope: ["constant.other.color", "constant.other.color.rgb-value.hex"],
-      settings: { foreground: syntax.string },
-    },
     {
       name: "CSS at-rule",
       scope: ["keyword.control.at-rule", "punctuation.definition.keyword"],
       settings: { foreground: syntax.keyword },
-    },
-
-    // JSDoc / documentation comments
-    {
-      name: "JSDoc tag",
-      scope: [
-        "comment.block.documentation keyword",
-        "storage.type.class.jsdoc",
-      ],
-      settings: { foreground: syntax.keyword },
-    },
-    {
-      name: "JSDoc type reference",
-      scope: ["comment.block.documentation entity.name.type"],
-      settings: { foreground: syntax.function, fontStyle: "italic" },
-    },
-    {
-      name: "JSDoc parameter name",
-      scope: ["comment.block.documentation variable"],
-      settings: { foreground: syntax.number, fontStyle: "italic" },
-    },
-
-    // Markdown
-    {
-      name: "Markdown heading",
-      scope: ["markup.heading", "entity.name.section.markdown"],
-      settings: { foreground: syntax.keyword, fontStyle: "bold" },
-    },
-    {
-      name: "Markdown heading punctuation",
-      scope: ["punctuation.definition.heading.markdown"],
-      settings: { foreground: syntax.comment },
-    },
-    {
-      name: "Markdown bold",
-      scope: ["markup.bold", "punctuation.definition.bold"],
-      settings: { foreground: syntax.number, fontStyle: "bold" },
-    },
-    {
-      name: "Markdown italic",
-      scope: ["markup.italic", "punctuation.definition.italic"],
-      settings: { foreground: syntax.type, fontStyle: "italic" },
     },
     {
       name: "Markdown bold+italic",
@@ -958,15 +668,7 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       settings: { foreground: syntax.function },
     },
     {
-      name: "Markdown link URL",
-      scope: [
-        "markup.underline.link",
-        "constant.other.reference.link.markdown",
-      ],
-      settings: { foreground: syntax.string },
-    },
-    {
-      name: "Markdown inline code / fenced code",
+      name: "Markdown inline/fenced code",
       scope: [
         "markup.inline.raw",
         "markup.fenced_code.block",
@@ -992,8 +694,6 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       scope: ["meta.separator.markdown"],
       settings: { foreground: syntax.comment },
     },
-
-    // Diff (in unified diff files)
     {
       name: "Diff inserted",
       scope: ["markup.inserted", "meta.diff.header.to-file"],
@@ -1010,12 +710,10 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       settings: { foreground: syntax.number },
     },
     {
-      name: "Diff range / hunk header",
+      name: "Diff hunk header",
       scope: ["meta.diff.range", "meta.diff.header"],
       settings: { foreground: syntax.function },
     },
-
-    // JSON / YAML keys
     {
       name: "JSON key",
       scope: [
@@ -1032,84 +730,37 @@ function buildTokenColors(syntax, textFg, semanticDanger) {
       ],
       settings: { foreground: syntax.tag },
     },
-
-    // Doc comments (JSDoc / TSDoc / rustdoc / etc.)
-    {
-      name: "Doc comment keyword",
-      scope: ["comment.block.documentation keyword"],
-      settings: { foreground: syntax.keyword },
-    },
-    {
-      name: "Doc comment type",
-      scope: ["comment.block.documentation entity.name.type"],
-      settings: { foreground: syntax.type, fontStyle: "italic" },
-    },
-    {
-      name: "Doc comment param",
-      scope: ["comment.block.documentation variable"],
-      settings: { foreground: syntax.parameter, fontStyle: "italic" },
-    },
-
-    // Invalid / deprecated
-    {
-      name: "Invalid",
-      scope: ["invalid.illegal", "invalid.broken"],
-      settings: { foreground: semanticDanger, fontStyle: "italic underline" },
-    },
-    {
-      name: "Invalid deprecated",
-      scope: ["invalid.deprecated"],
-      settings: { foreground: textFg, fontStyle: "italic underline" },
-    },
-
-    // JS/TS: prevent const-colored variables from over-matching the constant slot
-    {
-      name: "JS/TS variable constant fallthrough",
-      scope: [
-        "variable.other.constant.js",
-        "variable.other.constant.ts",
-        "variable.other.constant.tsx",
-      ],
-      settings: { foreground: textFg },
-    },
   ];
 }
 
-// LSP-driven semantic highlighting. Mirrors the TextMate mapping so semantic
-// types resolve to the same syntax slots.
-function buildSemanticTokenColors(syntax, textFg) {
-  return {
-    variable: { foreground: textFg },
-    parameter: { foreground: syntax.parameter, fontStyle: "italic" },
-    property: { foreground: textFg },
-    enumMember: { foreground: syntax.constant },
-    function: { foreground: syntax.function },
-    method: { foreground: syntax.function },
-    macro: { foreground: syntax.function },
-    class: { foreground: syntax.type, fontStyle: "" },
-    interface: { foreground: syntax.type, fontStyle: "" },
-    enum: { foreground: syntax.type, fontStyle: "" },
-    struct: { foreground: syntax.type, fontStyle: "" },
-    type: { foreground: syntax.type, fontStyle: "" },
-    typeParameter: { foreground: syntax.type },
-    namespace: { foreground: syntax.type },
-    decorator: { foreground: syntax.function },
-    keyword: { foreground: syntax.keyword },
-    modifier: { foreground: syntax.keyword },
-    operator: { foreground: syntax.keyword },
-    string: { foreground: syntax.string },
-    number: { foreground: syntax.number },
-    regexp: { foreground: syntax.regex },
-    comment: { foreground: syntax.comment, fontStyle: "italic" },
-    "variable.readonly": { foreground: syntax.constant },
-    "variable.defaultLibrary": {
-      foreground: syntax.keyword,
-      fontStyle: "italic",
-    },
-    "function.defaultLibrary": { foreground: syntax.function },
-    "class.defaultLibrary": { foreground: syntax.type, fontStyle: "" },
-    "type.defaultLibrary": { foreground: syntax.type, fontStyle: "" },
-  };
+function buildSemanticTokenColors(semRecs, syntax, textFg, semanticDanger) {
+  const result = {};
+  for (const [type, spec] of Object.entries(semRecs.types)) {
+    const { color, styles } = resolveExt(spec);
+    result[type] = {
+      foreground: resolveColor(color, syntax, textFg, semanticDanger),
+      fontStyle: styles.length ? styles.join(" ") : "",
+    };
+  }
+  for (const [mod, spec] of Object.entries(semRecs.modifiers)) {
+    if (spec === "none") continue;
+    const entry = {};
+    if (typeof spec === "string") {
+      entry.foreground = resolveColor(spec, syntax, textFg, semanticDanger);
+    } else {
+      if (spec.color)
+        entry.foreground = resolveColor(
+          spec.color,
+          syntax,
+          textFg,
+          semanticDanger,
+        );
+      if (spec.style && spec.style.length)
+        entry.fontStyle = spec.style.join(" ");
+    }
+    result[`*.${mod}`] = entry;
+  }
+  return result;
 }
 
 export function buildTheme(flavor, variant, tokens) {
@@ -1124,7 +775,18 @@ export function buildTheme(flavor, variant, tokens) {
     type: f.type,
     semanticHighlighting: true,
     colors: buildWorkbenchColors(tokens, flavor, variant),
-    tokenColors: buildTokenColors(f.syntax, f.text.fg, f.semantic.danger),
-    semanticTokenColors: buildSemanticTokenColors(f.syntax, f.text.fg),
+    tokenColors: buildTokenColors(
+      tokens.scope_recommendations,
+      tokens.syntax_tokens.extended,
+      f.syntax,
+      f.text.fg,
+      f.semantic.danger,
+    ),
+    semanticTokenColors: buildSemanticTokenColors(
+      tokens.semantic_token_recommendations,
+      f.syntax,
+      f.text.fg,
+      f.semantic.danger,
+    ),
   };
 }

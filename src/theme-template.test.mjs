@@ -34,11 +34,11 @@ test("Markdown inline formatting", () => {
   const theme = buildTheme("midnight", "purple", tokens);
   const syntax = tokens.flavors.midnight.syntax;
 
-  const bold = findRule(theme, "Markdown bold");
+  const bold = findRule(theme, "strong");
   assert.equal(bold.foreground, syntax.number);
   assert.equal(bold.fontStyle, "bold");
 
-  const italic = findRule(theme, "Markdown italic");
+  const italic = findRule(theme, "emphasis");
   assert.equal(italic.foreground, syntax.type);
   assert.equal(italic.fontStyle, "italic");
 
@@ -49,8 +49,8 @@ test("Markdown inline formatting", () => {
   const linkText = findRule(theme, "Markdown link text");
   assert.equal(linkText.foreground, syntax.function);
 
-  const linkUrl = findRule(theme, "Markdown link URL");
-  assert.equal(linkUrl.foreground, syntax.string);
+  const linkUrl = findRule(theme, "link");
+  assert.equal(linkUrl.foreground, syntax.tag);
 });
 
 test("Markdown structural elements", () => {
@@ -66,20 +66,17 @@ test("Markdown structural elements", () => {
 
   const hr = findRule(theme, "Markdown horizontal rule");
   assert.equal(hr.foreground, syntax.comment);
-
-  const headingPunct = findRule(theme, "Markdown heading punctuation");
-  assert.equal(headingPunct.foreground, syntax.comment);
 });
 
 test("Variable semantics", () => {
   const theme = buildTheme("midnight", "purple", tokens);
   const syntax = tokens.flavors.midnight.syntax;
 
-  const lang = findRule(theme, "Language variable / this / self / super");
+  const lang = findRule(theme, "lang_var");
   assert.equal(lang.foreground, syntax.constant);
   assert.equal(lang.fontStyle, "italic");
 
-  const param = findRule(theme, "Parameter");
+  const param = findRule(theme, "parameter");
   assert.equal(param.foreground, syntax.parameter);
   assert.equal(param.fontStyle, "italic");
 });
@@ -88,15 +85,15 @@ test("JSDoc coloring", () => {
   const theme = buildTheme("midnight", "purple", tokens);
   const syntax = tokens.flavors.midnight.syntax;
 
-  const tags = findRule(theme, "JSDoc tag");
+  const tags = findRule(theme, "doc_keyword");
   assert.equal(tags.foreground, syntax.keyword);
 
-  const typeRef = findRule(theme, "JSDoc type reference");
-  assert.equal(typeRef.foreground, syntax.function);
+  const typeRef = findRule(theme, "doc_type");
+  assert.equal(typeRef.foreground, syntax.type);
   assert.equal(typeRef.fontStyle, "italic");
 
-  const paramName = findRule(theme, "JSDoc parameter name");
-  assert.equal(paramName.foreground, syntax.number);
+  const paramName = findRule(theme, "doc_param");
+  assert.equal(paramName.foreground, syntax.parameter);
   assert.equal(paramName.fontStyle, "italic");
 });
 
@@ -121,21 +118,22 @@ test("Language-specific tokens", () => {
 
 test("Structural and semantic cleanup", () => {
   const theme = buildTheme("midnight", "purple", tokens);
-  const syntax = tokens.flavors.midnight.syntax;
+  const f = tokens.flavors.midnight;
+  const syntax = f.syntax;
 
-  const type = findRule(theme, "Type");
-  assert.equal(type.fontStyle, "");
+  const type = findRule(theme, "type");
+  assert.equal(type.fontStyle, undefined);
 
-  const attr = findRule(theme, "Attribute name");
-  assert.equal(attr.fontStyle, "italic");
+  const attr = findRule(theme, "attr");
+  assert.equal(attr.fontStyle, undefined);
 
-  const invalid = findRule(theme, "Invalid");
-  assert.equal(invalid.foreground, syntax.regex);
+  const invalid = findRule(theme, "invalid");
+  assert.equal(invalid.foreground, f.semantic.danger);
   assert.equal(invalid.fontStyle, "italic underline");
 
-  const deprecated = findRule(theme, "Deprecated");
-  assert.equal(deprecated.foreground, syntax.regex);
-  assert.equal(deprecated.fontStyle, "italic");
+  const deprecated = findRule(theme, "invalid_deprecated");
+  assert.equal(deprecated.foreground, f.text.fg);
+  assert.equal(deprecated.fontStyle, "italic underline");
 });
 
 test("Semantic token consistency", () => {
@@ -146,8 +144,10 @@ test("Semantic token consistency", () => {
   assert.equal(sem.parameter.foreground, syntax.parameter);
   assert.equal(sem.parameter.fontStyle, "italic");
 
-  assert.equal(sem["variable.defaultLibrary"].foreground, syntax.keyword);
-  assert.equal(sem["variable.defaultLibrary"].fontStyle, "italic");
+  assert.equal(sem.typeParameter.foreground, syntax.parameter);
+  assert.equal(sem.typeParameter.fontStyle, "");
+
+  assert.equal(sem["*.defaultLibrary"].fontStyle, "italic");
 
   assert.equal(sem.class.fontStyle, "");
   assert.equal(sem.type.fontStyle, "");
