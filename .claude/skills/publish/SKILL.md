@@ -1,3 +1,9 @@
+---
+name: publish
+description: Release skill for vivid-life-vs-code — bumps version, updates CHANGELOG, commits, tags, and pushes. CI handles vsce publish. Use only when intentionally cutting a release.
+disable-model-invocation: true
+---
+
 # VS Code Marketplace Publish Skill
 
 Runs the full release sequence for vivid-life-vs-code: pre-flight → version
