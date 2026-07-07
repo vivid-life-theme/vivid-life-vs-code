@@ -11,3 +11,8 @@ node_modules/
 
 # Headroom — machine-local session cache and learnings
 .headroom/
+
+# Local code-intelligence tool caches
+.codegraph/
+.serena/
+.tokensave/

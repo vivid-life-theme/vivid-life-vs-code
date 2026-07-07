@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-07-07
+
+### Fixed
+
+- `statusBarItem.remoteBackground`/`remoteForeground` now use the flavor's accent color instead of the neutral status bar background, so the remote-connection indicator is highlighted like it is in other VS Code themes
+
 ## [0.2.0] - 2026-06-28
 
 ### Changed
