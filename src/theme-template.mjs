@@ -240,8 +240,12 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBarItem.prominentHoverBackground": isDark
       ? "#000000b3"
       : "#00000066",
-    "statusBarItem.remoteBackground": surface.bg_sunk,
-    "statusBarItem.remoteForeground": text.fg,
+    // Remote indicator uses ansi.cyan — fixed per-flavor and outside
+    // variant_hues, so it can't collide with semantic.danger/warning the way
+    // the accent (which IS red/yellow on those variants) did. Same trick as
+    // editor.wordHighlightBackground above.
+    "statusBarItem.remoteBackground": ansi.cyan,
+    "statusBarItem.remoteForeground": accentOn,
     "statusBarItem.errorBackground": semantic.danger,
     "statusBarItem.errorForeground": accentOn,
     "statusBarItem.warningBackground": semantic.warning,
