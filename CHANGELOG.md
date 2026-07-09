@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-07-09
+
+### Fixed
+
+- `statusBarItem.remoteBackground`/`remoteForeground` reverted to a neutral `bg_sunk`/`text.fg` pairing — the accent color introduced in 0.2.1 to "highlight" the remote indicator instead made it collide visually with other accent-colored status bar badges (`activityBarBadge`, `badge`, `extensionBadge`)
+- `terminalCommandDecoration.defaultBackground`/`successBackground`/`errorBackground` now use theme-aware colors instead of falling back to VS Code's hardcoded blue/red defaults, so the terminal shell-integration gutter dots match the flavor's palette
+
 ## [0.2.1] - 2026-07-07
 
 ### Fixed
