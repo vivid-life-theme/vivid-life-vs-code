@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-07-09
+
+### Fixed
+
+- `statusBarItem.remoteBackground`/`remoteForeground` restored using `ansi.cyan` (fixed per-flavor, outside `variant_hues`) instead of the neutral `bg_sunk`/`text.fg` pairing from 0.2.2 — the remote indicator is highlighted again without colliding with `errorBackground`/`warningBackground` on the Red/Yellow/Orange variants, the issue that caused the 0.2.2 revert
+
 ## [0.2.2] - 2026-07-09
 
 ### Fixed
