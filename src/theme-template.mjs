@@ -236,16 +236,24 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBar.debuggingBorder": border.subtle,
     "statusBarItem.activeBackground": isDark ? "#ffffff26" : "#00000026",
     "statusBarItem.hoverBackground": isDark ? "#ffffff1a" : "#0000001a",
-    "statusBarItem.prominentBackground": isDark ? "#00000033" : "#00000014",
+    "statusBarItem.prominentBackground": isDark ? "#00000080" : "#00000040",
     "statusBarItem.prominentHoverBackground": isDark
-      ? "#00000066"
-      : "#00000026",
-    "statusBarItem.remoteBackground": accent,
-    "statusBarItem.remoteForeground": accentOn,
+      ? "#000000b3"
+      : "#00000066",
+    "statusBarItem.remoteBackground": surface.bg_sunk,
+    "statusBarItem.remoteForeground": text.fg,
     "statusBarItem.errorBackground": semantic.danger,
     "statusBarItem.errorForeground": accentOn,
     "statusBarItem.warningBackground": semantic.warning,
     "statusBarItem.warningForeground": accentOn,
+
+    // terminal command decorations (shell integration gutter dots)
+    "terminalCommandDecoration.defaultBackground": withAlpha(
+      text.fg_subtle,
+      ALPHA.a40,
+    ),
+    "terminalCommandDecoration.successBackground": semantic.success,
+    "terminalCommandDecoration.errorBackground": semantic.danger,
 
     // title bar
     "titleBar.activeBackground": surface.bg_sunk,
