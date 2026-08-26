@@ -173,3 +173,74 @@ test("Status bar remote item uses bg_sunk and text.fg — all 4 flavors", () => 
     );
   }
 });
+
+test("Panel background is distinct from editor background — all 4 flavors", () => {
+  const flavors = ["midnight", "twilight", "dawn", "noon"];
+  for (const flavor of flavors) {
+    const theme = buildTheme(flavor, "purple", tokens);
+    const f = tokens.flavors[flavor];
+    assert.equal(
+      theme.colors["panel.background"],
+      f.surface.bg_sunk,
+      `${flavor}: panel.background should be surface.bg_sunk (${f.surface.bg_sunk})`,
+    );
+    assert.notEqual(
+      theme.colors["panel.background"],
+      theme.colors["editor.background"],
+      `${flavor}: panel.background must not match editor.background — that's the bug this test guards against`,
+    );
+    // terminal.background intentionally stays surface.bg (matching
+    // editor.background), NOT bg_sunk like panel.background above: every
+    // surface tier collides with some ANSI foreground color on at least one
+    // flavor (see the comment in theme-template.mjs), so this is left
+    // matching the editor pending a foundation-level fix. If this ever
+    // changes, re-verify against every ansi.* value per flavor first.
+    assert.equal(
+      theme.colors["terminal.background"],
+      f.surface.bg,
+      `${flavor}: terminal.background should stay surface.bg (${f.surface.bg}) — see ANSI-collision note`,
+    );
+    // terminalCursor.background must track terminal.background exactly —
+    // it's the color painted under a block cursor, so any mismatch would
+    // show as a mis-colored cell.
+    assert.equal(
+      theme.colors["terminalCursor.background"],
+      theme.colors["terminal.background"],
+      `${flavor}: terminalCursor.background must match terminal.background`,
+    );
+    // Section headers invert to surface.bg (the lighter step) so they stay
+    // readable against the now-darker panel.background.
+    assert.equal(
+      theme.colors["panelSectionHeader.background"],
+      f.surface.bg,
+      `${flavor}: panelSectionHeader.background should be surface.bg (${f.surface.bg})`,
+    );
+    assert.notEqual(
+      theme.colors["panelSectionHeader.background"],
+      theme.colors["panel.background"],
+      `${flavor}: panelSectionHeader.background must not match panel.background`,
+    );
+    // panel.border/panelSection.border (border.subtle) are expected to stay
+    // distinct from panel.background on every flavor except Dawn, where
+    // border.subtle == bg_sunk is a pre-existing foundation-token coincidence
+    // (tab.border already collides with tab.inactiveBackground the same way
+    // on Dawn, unrelated to this file) — not something a different border
+    // token choice here can fix without trading it for a worse collision
+    // elsewhere (see the PR discussion for the full token comparison).
+    for (const key of ["panel.border", "panelSection.border"]) {
+      if (flavor === "dawn") {
+        assert.equal(
+          theme.colors[key],
+          theme.colors["panel.background"],
+          `dawn: ${key} is expected to collide with panel.background (known, pre-existing border.subtle == bg_sunk coincidence)`,
+        );
+      } else {
+        assert.notEqual(
+          theme.colors[key],
+          theme.colors["panel.background"],
+          `${flavor}: ${key} must not match panel.background`,
+        );
+      }
+    }
+  }
+});

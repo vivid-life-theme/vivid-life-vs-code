@@ -382,8 +382,12 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "notificationsWarningIcon.foreground": semantic.warning,
     "notificationsInfoIcon.foreground": semantic.info,
 
-    // panel (terminal/output/etc container)
-    "panel.background": surface.bg,
+    // panel (terminal/output/etc container) — uses bg_sunk, same as the
+    // sidebar/activity bar/status bar, so the whole non-editing "chrome"
+    // reads as one visually distinct layer against the editor's bg. Without
+    // this the panel/terminal shared editor.background exactly and the pane
+    // boundary depended on a 1px border alone.
+    "panel.background": surface.bg_sunk,
     "panel.border": border.subtle,
     "panel.dropBorder": accent,
     "panelTitle.activeBorder": accent,
@@ -391,10 +395,21 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "panelTitle.inactiveForeground": text.fg_subtle,
     "panelInput.border": border.default,
     "panelSection.border": border.subtle,
-    "panelSectionHeader.background": surface.bg_sunk,
+    // Section headers now read as the lighter surface.bg step, inverted from
+    // before, to keep internal contrast now that panel.background is sunk.
+    "panelSectionHeader.background": surface.bg,
     "panelSectionHeader.foreground": text.fg,
 
-    // terminal
+    // terminal — background stays surface.bg (NOT bg_sunk like
+    // panel.background above). The foundation's ANSI colors share the same
+    // neutral ramp as the surface tokens, and every surface tier collides
+    // with some ANSI slot on at least one flavor (bg_sunk hits ansi.black on
+    // Midnight/Twilight and ansi.bright_white — commonly used as plain
+    // terminal text, not just reverse-video — on Noon; bg_soft/bg_overlay
+    // hits ansi.bright_black on Midnight and ansi.bright_white on Dawn).
+    // That's a foundation-level gap (see CLAUDE.md), not something a
+    // different token choice here can route around, so terminal.background
+    // is left matching editor.background until it's fixed upstream.
     "terminal.foreground": text.fg,
     "terminal.background": surface.bg,
     "terminal.border": border.subtle,
