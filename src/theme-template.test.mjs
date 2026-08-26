@@ -220,5 +220,27 @@ test("Panel background is distinct from editor background — all 4 flavors", ()
       theme.colors["panel.background"],
       `${flavor}: panelSectionHeader.background must not match panel.background`,
     );
+    // panel.border/panelSection.border (border.subtle) are expected to stay
+    // distinct from panel.background on every flavor except Dawn, where
+    // border.subtle == bg_sunk is a pre-existing foundation-token coincidence
+    // (tab.border already collides with tab.inactiveBackground the same way
+    // on Dawn, unrelated to this file) — not something a different border
+    // token choice here can fix without trading it for a worse collision
+    // elsewhere (see the PR discussion for the full token comparison).
+    for (const key of ["panel.border", "panelSection.border"]) {
+      if (flavor === "dawn") {
+        assert.equal(
+          theme.colors[key],
+          theme.colors["panel.background"],
+          `dawn: ${key} is expected to collide with panel.background (known, pre-existing border.subtle == bg_sunk coincidence)`,
+        );
+      } else {
+        assert.notEqual(
+          theme.colors[key],
+          theme.colors["panel.background"],
+          `${flavor}: ${key} must not match panel.background`,
+        );
+      }
+    }
   }
 });
