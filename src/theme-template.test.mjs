@@ -191,5 +191,17 @@ test("Panel/terminal background is distinct from editor background — all 4 fla
         `${flavor}: ${key} must not match editor.background — that's the bug this test guards against`,
       );
     }
+    // Section headers invert to surface.bg (the lighter step) so they stay
+    // readable against the now-darker panel.background.
+    assert.equal(
+      theme.colors["panelSectionHeader.background"],
+      f.surface.bg,
+      `${flavor}: panelSectionHeader.background should be surface.bg (${f.surface.bg})`,
+    );
+    assert.notEqual(
+      theme.colors["panelSectionHeader.background"],
+      theme.colors["panel.background"],
+      `${flavor}: panelSectionHeader.background must not match panel.background`,
+    );
   }
 });
