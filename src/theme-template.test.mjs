@@ -200,6 +200,14 @@ test("Panel background is distinct from editor background — all 4 flavors", ()
       f.surface.bg,
       `${flavor}: terminal.background should stay surface.bg (${f.surface.bg}) — see ANSI-collision note`,
     );
+    // terminalCursor.background must track terminal.background exactly —
+    // it's the color painted under a block cursor, so any mismatch would
+    // show as a mis-colored cell.
+    assert.equal(
+      theme.colors["terminalCursor.background"],
+      theme.colors["terminal.background"],
+      `${flavor}: terminalCursor.background must match terminal.background`,
+    );
     // Section headers invert to surface.bg (the lighter step) so they stay
     // readable against the now-darker panel.background.
     assert.equal(
