@@ -382,8 +382,12 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "notificationsWarningIcon.foreground": semantic.warning,
     "notificationsInfoIcon.foreground": semantic.info,
 
-    // panel (terminal/output/etc container)
-    "panel.background": surface.bg,
+    // panel (terminal/output/etc container) — uses bg_sunk, same as the
+    // sidebar/activity bar/status bar, so the whole non-editing "chrome"
+    // reads as one visually distinct layer against the editor's bg. Without
+    // this the panel/terminal shared editor.background exactly and the pane
+    // boundary depended on a 1px border alone.
+    "panel.background": surface.bg_sunk,
     "panel.border": border.subtle,
     "panel.dropBorder": accent,
     "panelTitle.activeBorder": accent,
@@ -391,19 +395,22 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "panelTitle.inactiveForeground": text.fg_subtle,
     "panelInput.border": border.default,
     "panelSection.border": border.subtle,
-    "panelSectionHeader.background": surface.bg_sunk,
+    // Section headers now read as the lighter surface.bg step, inverted from
+    // before, to keep internal contrast now that panel.background is sunk.
+    "panelSectionHeader.background": surface.bg,
     "panelSectionHeader.foreground": text.fg,
 
-    // terminal
+    // terminal — background matches panel.background (they're the same
+    // physical region) so it stays part of the chrome layer, not the editor.
     "terminal.foreground": text.fg,
-    "terminal.background": surface.bg,
+    "terminal.background": surface.bg_sunk,
     "terminal.border": border.subtle,
     "terminal.selectionBackground": withAlpha(accent, ALPHA.a30),
     "terminal.inactiveSelectionBackground": withAlpha(accent, ALPHA.a15),
     "terminal.findMatchBackground": withAlpha(semantic.warning, ALPHA.a40),
     "terminal.findMatchHighlightBackground": withAlpha(accent, ALPHA.a20),
     "terminalCursor.foreground": accent,
-    "terminalCursor.background": surface.bg,
+    "terminalCursor.background": surface.bg_sunk,
     "terminal.ansiBlack": ansi.black,
     "terminal.ansiRed": ansi.red,
     "terminal.ansiGreen": ansi.green,
