@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import tokens from "@vivid-life-theme/design-system";
+import { contrast } from "@vivid-life-theme/design-system/tools/build-tokens";
 import { buildTheme } from "./theme-template.mjs";
 
 // Look up a tokenColors entry by its `name` field.
@@ -156,20 +157,29 @@ test("Semantic token consistency", () => {
   assert.equal(sem.struct.fontStyle, "");
 });
 
-test("Status bar remote item uses bg_sunk and text.fg — all 4 flavors", () => {
+test("Status bar remote item uses reserved ansi.cyan and accent-on-style text — all 4 flavors", () => {
+  // Deliberately not surface.bg_sunk / text.fg: commit 8a81d74 moved this to
+  // ansi.cyan (fixed per-flavor, outside variant_hues) so it can't collide
+  // with semantic.danger/warning the way the accent color did, with a
+  // contrasting accentOn-style foreground (same trick as
+  // editor.wordHighlightBackground) rather than the normal body-text color.
   const flavors = ["midnight", "twilight", "dawn", "noon"];
   for (const flavor of flavors) {
     const theme = buildTheme(flavor, "purple", tokens);
     const f = tokens.flavors[flavor];
+    const accentOn =
+      f.type === "dark"
+        ? tokens.palette.gray["900"]
+        : tokens.palette.gray["100"];
     assert.equal(
       theme.colors["statusBarItem.remoteBackground"],
-      f.surface.bg_sunk,
-      `${flavor}: remoteBackground should be bg_sunk (${f.surface.bg_sunk})`,
+      f.ansi.cyan,
+      `${flavor}: remoteBackground should be ansi.cyan (${f.ansi.cyan})`,
     );
     assert.equal(
       theme.colors["statusBarItem.remoteForeground"],
-      f.text.fg,
-      `${flavor}: remoteForeground should be text.fg (${f.text.fg})`,
+      accentOn,
+      `${flavor}: remoteForeground should be accent-on-style text (${accentOn})`,
     );
   }
 });
@@ -189,16 +199,19 @@ test("Panel background is distinct from editor background — all 4 flavors", ()
       theme.colors["editor.background"],
       `${flavor}: panel.background must not match editor.background — that's the bug this test guards against`,
     );
-    // terminal.background intentionally stays surface.bg (matching
-    // editor.background), NOT bg_sunk like panel.background above: every
-    // surface tier collides with some ANSI foreground color on at least one
-    // flavor (see the comment in theme-template.mjs), so this is left
-    // matching the editor pending a foundation-level fix. If this ever
-    // changes, re-verify against every ansi.* value per flavor first.
+    // terminal.background uses surface.bg_terminal (design-system 0.6.0+),
+    // the surface tier verified against all 16 ansi.* colors per flavor —
+    // see vivid-life-design-system issue #5. It's distinct from both
+    // editor.background and panel.background.
     assert.equal(
       theme.colors["terminal.background"],
-      f.surface.bg,
-      `${flavor}: terminal.background should stay surface.bg (${f.surface.bg}) — see ANSI-collision note`,
+      f.surface.bg_terminal,
+      `${flavor}: terminal.background should be surface.bg_terminal (${f.surface.bg_terminal})`,
+    );
+    assert.notEqual(
+      theme.colors["terminal.background"],
+      theme.colors["editor.background"],
+      `${flavor}: terminal.background must not match editor.background`,
     );
     // terminalCursor.background must track terminal.background exactly —
     // it's the color painted under a block cursor, so any mismatch would
@@ -239,6 +252,40 @@ test("Panel background is distinct from editor background — all 4 flavors", ()
           theme.colors[key],
           theme.colors["panel.background"],
           `${flavor}: ${key} must not match panel.background`,
+        );
+      }
+    }
+  }
+});
+
+// Pins the exact exception set documented in CLAUDE.md's surface.bg_terminal
+// note: terminal.background must clear 4.5:1 (WCAG AA) against every
+// ansi.* color per flavor except the conventional reverse-video anchor
+// slot(s), and those documented exceptions must genuinely fail AA (proving
+// they're real near-invisible slots, not just labels). If a future
+// design-system bump changes ansi.* or bg_terminal, this fails loudly
+// instead of requiring a manual re-check.
+test("terminal.background AA-contrast exception set matches CLAUDE.md — all 4 flavors", () => {
+  const documentedExceptions = {
+    midnight: ["black"],
+    twilight: ["black"],
+    dawn: ["white", "bright_white"],
+    noon: ["bright_white"],
+  };
+  for (const [flavor, exceptions] of Object.entries(documentedExceptions)) {
+    const theme = buildTheme(flavor, "purple", tokens);
+    const bg = theme.colors["terminal.background"];
+    for (const [name, color] of Object.entries(tokens.flavors[flavor].ansi)) {
+      const ratio = contrast(bg, color);
+      if (exceptions.includes(name)) {
+        assert.ok(
+          ratio < 4.5,
+          `${flavor}: ansi.${name} (${color}) is documented as a near-invisible exception but clears AA (${ratio.toFixed(2)}:1) against terminal.background (${bg}) — CLAUDE.md's exception list is now wrong`,
+        );
+      } else {
+        assert.ok(
+          ratio >= 4.5,
+          `${flavor}: ansi.${name} (${color}) fails AA (${ratio.toFixed(2)}:1) against terminal.background (${bg}) but isn't in CLAUDE.md's documented exception list`,
         );
       }
     }

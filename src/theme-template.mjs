@@ -400,25 +400,21 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "panelSectionHeader.background": surface.bg,
     "panelSectionHeader.foreground": text.fg,
 
-    // terminal — background stays surface.bg (NOT bg_sunk like
-    // panel.background above). The foundation's ANSI colors share the same
-    // neutral ramp as the surface tokens, and every surface tier collides
-    // with some ANSI slot on at least one flavor (bg_sunk hits ansi.black on
-    // Midnight/Twilight and ansi.bright_white — commonly used as plain
-    // terminal text, not just reverse-video — on Noon; bg_soft/bg_overlay
-    // hits ansi.bright_black on Midnight and ansi.bright_white on Dawn).
-    // That's a foundation-level gap (see CLAUDE.md), not something a
-    // different token choice here can route around, so terminal.background
-    // is left matching editor.background until it's fixed upstream.
+    // terminal — background uses surface.bg_terminal (design-system 0.6.0+),
+    // the first surface tier verified against all 16 ansi.* colors per
+    // flavor. It's distinct from editor.background (surface.bg): an alias to
+    // bg_sunk on dark flavors, bg_soft on light flavors, chosen specifically
+    // because every other surface tier collides with some ansi.* slot on at
+    // least one flavor. See vivid-life-design-system issue #5 and CLAUDE.md.
     "terminal.foreground": text.fg,
-    "terminal.background": surface.bg,
+    "terminal.background": surface.bg_terminal,
     "terminal.border": border.subtle,
     "terminal.selectionBackground": withAlpha(accent, ALPHA.a30),
     "terminal.inactiveSelectionBackground": withAlpha(accent, ALPHA.a15),
     "terminal.findMatchBackground": withAlpha(semantic.warning, ALPHA.a40),
     "terminal.findMatchHighlightBackground": withAlpha(accent, ALPHA.a20),
     "terminalCursor.foreground": accent,
-    "terminalCursor.background": surface.bg,
+    "terminalCursor.background": surface.bg_terminal,
     "terminal.ansiBlack": ansi.black,
     "terminal.ansiRed": ansi.red,
     "terminal.ansiGreen": ansi.green,
