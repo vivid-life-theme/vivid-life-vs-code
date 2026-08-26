@@ -90,7 +90,8 @@ git tag -a vX.Y.Z -m "Version X.Y.Z"
 git push && git push --tags
 ```
 
-This fires the `release.yml` GitHub Actions workflow. `vsce publish` runs
+This fires the `publish-to-visual-studio-marketplace.yml` GitHub Actions
+workflow. `vsce publish` runs
 in CI using the `VSCE_PAT` secret — the PAT never touches the local machine.
 
 ## Confirm
