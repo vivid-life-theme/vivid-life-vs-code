@@ -174,23 +174,32 @@ test("Status bar remote item uses bg_sunk and text.fg — all 4 flavors", () => 
   }
 });
 
-test("Panel/terminal background is distinct from editor background — all 4 flavors", () => {
+test("Panel background is distinct from editor background — all 4 flavors", () => {
   const flavors = ["midnight", "twilight", "dawn", "noon"];
   for (const flavor of flavors) {
     const theme = buildTheme(flavor, "purple", tokens);
     const f = tokens.flavors[flavor];
-    for (const key of ["panel.background", "terminal.background"]) {
-      assert.equal(
-        theme.colors[key],
-        f.surface.bg_sunk,
-        `${flavor}: ${key} should be surface.bg_sunk (${f.surface.bg_sunk})`,
-      );
-      assert.notEqual(
-        theme.colors[key],
-        theme.colors["editor.background"],
-        `${flavor}: ${key} must not match editor.background — that's the bug this test guards against`,
-      );
-    }
+    assert.equal(
+      theme.colors["panel.background"],
+      f.surface.bg_sunk,
+      `${flavor}: panel.background should be surface.bg_sunk (${f.surface.bg_sunk})`,
+    );
+    assert.notEqual(
+      theme.colors["panel.background"],
+      theme.colors["editor.background"],
+      `${flavor}: panel.background must not match editor.background — that's the bug this test guards against`,
+    );
+    // terminal.background intentionally stays surface.bg (matching
+    // editor.background), NOT bg_sunk like panel.background above: every
+    // surface tier collides with some ANSI foreground color on at least one
+    // flavor (see the comment in theme-template.mjs), so this is left
+    // matching the editor pending a foundation-level fix. If this ever
+    // changes, re-verify against every ansi.* value per flavor first.
+    assert.equal(
+      theme.colors["terminal.background"],
+      f.surface.bg,
+      `${flavor}: terminal.background should stay surface.bg (${f.surface.bg}) — see ANSI-collision note`,
+    );
     // Section headers invert to surface.bg (the lighter step) so they stay
     // readable against the now-darker panel.background.
     assert.equal(
