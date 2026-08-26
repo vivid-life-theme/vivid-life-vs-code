@@ -620,6 +620,32 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "notebook.selectedCellBorder": border.default,
     "notebook.symbolHighlightBackground": withAlpha(accent, ALPHA.a15),
 
+    // chat — the chat view renders on bg_sunk in the sidebar/panel but on
+    // surface.bg when popped out as an editor tab. bg_soft is the only tier
+    // that reads as raised against both (see tab.hoverBackground above, which
+    // relies on the same property), so bubble/code surfaces use it rather
+    // than bg/bg_sunk directly.
+    "chat.requestBorder": border.subtle,
+    "chat.requestBackground": surface.bg_soft,
+    "chat.requestBubbleBackground": surface.bg_soft,
+    "chat.requestBubbleHoverBackground": withAlpha(accent, ALPHA.a10),
+    "chat.requestCodeBorder": border.default,
+    "chat.checkpointSeparator": border.subtle,
+    "chat.thinkingShimmer": accent,
+    // Avatar/slash-command chips join ansi.cyan rather than accent — the
+    // 0.2.1→0.2.3 statusBarItem.remoteBackground history shows a second
+    // accent-colored chip collides with activityBarBadge/badge/extensionBadge
+    // on the Red/Yellow/Orange variants; ansi.cyan is fixed per-flavor and
+    // stays outside variant_hues so it can't collide with the accent.
+    "chat.avatarBackground": ansi.cyan,
+    "chat.avatarForeground": accentOn,
+    "chat.slashCommandBackground": withAlpha(ansi.cyan, ALPHA.a20),
+    "chat.slashCommandForeground": ansi.cyan,
+    "chat.editedFileForeground": accent,
+    "chat.linesAddedForeground": semantic.success,
+    "chat.linesRemovedForeground": semantic.danger,
+    "chatManagement.sashBorder": border.subtle,
+
     // extensions
     "extensionButton.prominentBackground": accent,
     "extensionButton.prominentForeground": accentOn,

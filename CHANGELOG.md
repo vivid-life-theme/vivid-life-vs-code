@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Chat panel color coverage (`chat.*`, `chatManagement.sashBorder`) — previously unset, so the built-in Chat view fell back to VS Code's default colors instead of the flavor's palette. Bubble/code surfaces use `surface.bg_soft` (the only tier that reads as raised whether chat renders in the sidebar/panel on `bg_sunk` or as an editor tab on `bg`); avatar and slash-command chips use `ansi.cyan` rather than accent to avoid the badge-collision issue from 0.2.1–0.2.3.
+
 ## [0.2.4] - 2026-08-26
 
 ### Fixed
