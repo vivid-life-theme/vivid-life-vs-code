@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import tokens from "@vivid-life-theme/design-system";
+import { contrast } from "@vivid-life-theme/design-system/tools/build-tokens";
 import { buildTheme } from "./theme-template.mjs";
 
 // Look up a tokenColors entry by its `name` field.
@@ -251,6 +252,40 @@ test("Panel background is distinct from editor background — all 4 flavors", ()
           theme.colors[key],
           theme.colors["panel.background"],
           `${flavor}: ${key} must not match panel.background`,
+        );
+      }
+    }
+  }
+});
+
+// Pins the exact exception set documented in CLAUDE.md's surface.bg_terminal
+// note: terminal.background must clear 4.5:1 (WCAG AA) against every
+// ansi.* color per flavor except the conventional reverse-video anchor
+// slot(s), and those documented exceptions must genuinely fail AA (proving
+// they're real near-invisible slots, not just labels). If a future
+// design-system bump changes ansi.* or bg_terminal, this fails loudly
+// instead of requiring a manual re-check.
+test("terminal.background AA-contrast exception set matches CLAUDE.md — all 4 flavors", () => {
+  const documentedExceptions = {
+    midnight: ["black"],
+    twilight: ["black"],
+    dawn: ["white", "bright_white"],
+    noon: ["bright_white"],
+  };
+  for (const [flavor, exceptions] of Object.entries(documentedExceptions)) {
+    const theme = buildTheme(flavor, "purple", tokens);
+    const bg = theme.colors["terminal.background"];
+    for (const [name, color] of Object.entries(tokens.flavors[flavor].ansi)) {
+      const ratio = contrast(bg, color);
+      if (exceptions.includes(name)) {
+        assert.ok(
+          ratio < 4.5,
+          `${flavor}: ansi.${name} (${color}) is documented as a near-invisible exception but clears AA (${ratio.toFixed(2)}:1) against terminal.background (${bg}) — CLAUDE.md's exception list is now wrong`,
+        );
+      } else {
+        assert.ok(
+          ratio >= 4.5,
+          `${flavor}: ansi.${name} (${color}) fails AA (${ratio.toFixed(2)}:1) against terminal.background (${bg}) but isn't in CLAUDE.md's documented exception list`,
         );
       }
     }
