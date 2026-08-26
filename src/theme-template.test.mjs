@@ -173,3 +173,23 @@ test("Status bar remote item uses bg_sunk and text.fg — all 4 flavors", () => 
     );
   }
 });
+
+test("Panel/terminal background is distinct from editor background — all 4 flavors", () => {
+  const flavors = ["midnight", "twilight", "dawn", "noon"];
+  for (const flavor of flavors) {
+    const theme = buildTheme(flavor, "purple", tokens);
+    const f = tokens.flavors[flavor];
+    for (const key of ["panel.background", "terminal.background"]) {
+      assert.equal(
+        theme.colors[key],
+        f.surface.bg_sunk,
+        `${flavor}: ${key} should be surface.bg_sunk (${f.surface.bg_sunk})`,
+      );
+      assert.notEqual(
+        theme.colors[key],
+        theme.colors["editor.background"],
+        `${flavor}: ${key} must not match editor.background — that's the bug this test guards against`,
+      );
+    }
+  }
+});
