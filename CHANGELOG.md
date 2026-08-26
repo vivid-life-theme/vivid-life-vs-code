@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - `terminal.background`/`terminalCursor.background` no longer match `editor.background` — they now use `surface.bg_terminal` (design-system 0.6.0+), the first surface tier verified against all 16 `ansi.*` colors per flavor. Previously left equal to `editor.background` as a deliberate workaround pending a foundation-level fix (see `vivid-life-design-system` issue #5); the terminal pane is now visually distinct on all 4 flavors.
+
+### Changed
+
 - design-system dependency bumped to 0.6.0; all 24 themes regenerated
 
 ## [0.2.3] - 2026-07-09
