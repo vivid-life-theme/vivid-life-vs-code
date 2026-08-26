@@ -1,5 +1,5 @@
 ---
-name: publish
+name: release
 description: Release skill for vivid-life-vs-code — bumps version, updates CHANGELOG, commits, tags, and pushes. CI handles vsce publish. Use only when intentionally cutting a release.
 disable-model-invocation: true
 ---
@@ -25,7 +25,7 @@ Read `CHANGELOG.md`. Locate the `## [Unreleased]` section.
 If it contains no entries (only the heading and surrounding blank lines), stop:
 
 > The `[Unreleased]` section in CHANGELOG.md is empty.
-> Document what changed before running `/publish`.
+> Document what changed before running `/release`.
 
 Otherwise show the user the full contents of the `[Unreleased]` section and continue.
 
