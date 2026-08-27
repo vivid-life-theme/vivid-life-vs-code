@@ -4,9 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-08-27
+
 ### Added
 
 - Chat panel color coverage (`chat.*`, `chatManagement.sashBorder`) — previously unset, so the built-in Chat view fell back to VS Code's default colors instead of the flavor's palette. Bubble/code surfaces use `surface.bg_soft` (the only tier that reads as raised whether chat renders in the sidebar/panel on `bg_sunk` or as an editor tab on `bg`); avatar and slash-command chips use `ansi.cyan` rather than accent to avoid the badge-collision issue from 0.2.1–0.2.3.
+
+### Fixed
+
+- `statusBarItem.prominentBackground`/`prominentForeground` (used by VS Code's Workspace Trust "Restricted Mode" badge) now use the warning colors instead of a near-invisible translucent black/white overlay, so the badge visually stands out as the soft-warning indicator it is.
+- `statusBarItem.offlineBackground`/`offlineForeground` (Remote Development's disconnected indicator) were previously unset; now use the danger colors, matching VS Code's own default treatment of this token.
+
+### Changed
+
+- design-system dependency reinstalled at the already-pinned 0.6.0 (node_modules had drifted to a stale 0.4.0 install); all 24 themes regenerated with correct `terminal.background`/`terminalCursor.background` and `ansi.bright_black` values.
 
 ## [0.2.4] - 2026-08-26
 
