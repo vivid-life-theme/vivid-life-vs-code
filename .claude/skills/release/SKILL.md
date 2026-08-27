@@ -6,9 +6,7 @@ disable-model-invocation: true
 
 # VS Code Marketplace Publish Skill
 
-Runs the full release sequence for vivid-life-vs-code: pre-flight → version
-bump → CHANGELOG update → commit → tag → push. The actual `vsce publish`
-runs in GitHub Actions after the tag lands.
+Runs the full release sequence for vivid-life-vs-code: pre-flight → version bump → CHANGELOG update → commit → tag → push. The actual `vsce publish` runs in GitHub Actions after the tag lands.
 
 ## Pre-flight
 
@@ -24,8 +22,7 @@ Read `CHANGELOG.md`. Locate the `## [Unreleased]` section.
 
 If it contains no entries (only the heading and surrounding blank lines), stop:
 
-> The `[Unreleased]` section in CHANGELOG.md is empty.
-> Document what changed before running `/release`.
+> The `[Unreleased]` section in CHANGELOG.md is empty. Document what changed before running `/release`.
 
 Otherwise show the user the full contents of the `[Unreleased]` section and continue.
 
@@ -51,10 +48,8 @@ Edit `package.json`: change `"version"` to the confirmed version string.
 
 Edit `CHANGELOG.md`:
 
-1. Replace the `## [Unreleased]` heading with `## [X.Y.Z] - YYYY-MM-DD`
-   where `YYYY-MM-DD` is today's date in ISO 8601 format
-2. Insert a new `## [Unreleased]` section at the top (before the versioned
-   entry), with a blank line after the heading
+1. Replace the `## [Unreleased]` heading with `## [X.Y.Z] - YYYY-MM-DD` where `YYYY-MM-DD` is today's date in ISO 8601 format
+2. Insert a new `## [Unreleased]` section at the top (before the versioned entry), with a blank line after the heading
 
 The result should look like:
 
@@ -90,17 +85,12 @@ git tag -a vX.Y.Z -m "Version X.Y.Z"
 git push && git push --tags
 ```
 
-This fires the `publish-to-visual-studio-marketplace.yml` GitHub Actions
-workflow. `vsce publish` runs
-in CI using the `VSCE_PAT` secret — the PAT never touches the local machine.
+This fires the `publish-to-visual-studio-marketplace.yml` GitHub Actions workflow. `vsce publish` runs in CI using the `VSCE_PAT` secret — the PAT never touches the local machine.
 
 ## Confirm
 
 Report to the user:
 
-> Tag vX.Y.Z pushed. Monitor the publish run at:
-> https://github.com/vivid-life-theme/vivid-life-vs-code/actions
+> Tag vX.Y.Z pushed. Monitor the publish run at: https://github.com/vivid-life-theme/vivid-life-vs-code/actions
 >
-> The Marketplace listing typically updates within a few minutes of the
-> workflow completing. Verify at:
-> https://marketplace.visualstudio.com/items?itemName=vivid-life-theme.vivid-life-theme
+> The Marketplace listing typically updates within a few minutes of the workflow completing. Verify at: https://marketplace.visualstudio.com/items?itemName=vivid-life-theme.vivid-life-theme

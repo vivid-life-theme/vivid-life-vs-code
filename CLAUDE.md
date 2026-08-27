@@ -1,8 +1,6 @@
 # vivid-life-vs-code
 
-VS Code color-theme port of the [Vivid Life design system](https://github.com/vivid-life-theme/vivid-life-design-system).
-Node.js + ESM. Reads tokens from `@vivid-life-theme/design-system`; emits 24 themes
-(4 flavors × 6 variants) to `themes/`.
+VS Code color-theme port of the [Vivid Life design system](https://github.com/vivid-life-theme/vivid-life-design-system). Node.js + ESM. Reads tokens from `@vivid-life-theme/design-system`; emits 24 themes (4 flavors × 6 variants) to `themes/`.
 
 ## Key Config Files
 
