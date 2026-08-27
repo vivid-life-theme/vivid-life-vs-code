@@ -236,7 +236,11 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBar.debuggingBorder": border.subtle,
     "statusBarItem.activeBackground": isDark ? "#ffffff26" : "#00000026",
     "statusBarItem.hoverBackground": isDark ? "#ffffff1a" : "#0000001a",
-    "statusBarItem.prominentBackground": isDark ? "#00000080" : "#00000040",
+    // "prominent" is what VS Code uses for the Workspace Trust "Restricted
+    // Mode" badge (kind: 'prominent') — a soft warning that needs to stand
+    // out from the rest of the status bar, so it shares warning's colors.
+    "statusBarItem.prominentBackground": semantic.warning,
+    "statusBarItem.prominentForeground": accentOn,
     "statusBarItem.prominentHoverBackground": isDark
       ? "#000000b3"
       : "#00000066",
@@ -250,6 +254,10 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBarItem.errorForeground": accentOn,
     "statusBarItem.warningBackground": semantic.warning,
     "statusBarItem.warningForeground": accentOn,
+    // Remote Development's disconnected/offline indicator — VS Code's own
+    // default (#6c1717) treats this as danger-severity, same as error.
+    "statusBarItem.offlineBackground": semantic.danger,
+    "statusBarItem.offlineForeground": accentOn,
 
     // terminal command decorations (shell integration gutter dots)
     "terminalCommandDecoration.defaultBackground": withAlpha(
