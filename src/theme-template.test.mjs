@@ -201,18 +201,33 @@ test("Panel background is distinct from editor background — all 4 flavors", ()
     );
     // terminal.background uses surface.bg_terminal (design-system 0.6.0+),
     // the surface tier verified against all 16 ansi.* colors per flavor —
-    // see vivid-life-design-system issue #5. It's distinct from both
-    // editor.background and panel.background.
+    // see vivid-life-design-system issue #5. It's distinct from
+    // panel.background on all 4 flavors.
     assert.equal(
       theme.colors["terminal.background"],
       f.surface.bg_terminal,
       `${flavor}: terminal.background should be surface.bg_terminal (${f.surface.bg_terminal})`,
     );
-    assert.notEqual(
-      theme.colors["terminal.background"],
-      theme.colors["editor.background"],
-      `${flavor}: terminal.background must not match editor.background`,
-    );
+    // On dawn only, bg_terminal == bg (design-system 0.7.0 / issue #7):
+    // dawn's ANSI normal set can't go lighter than #d2d2d2 without dropping
+    // below AA, and everything above that collides with noon, so dawn's
+    // terminal fill fell back to the flavor canvas. In this embedded port
+    // the terminal panel still reads as a distinct region via bg_inset
+    // chrome + border, just not via fill — see the design-system README's
+    // "Dawn's terminal panel has no fill of its own" caveat.
+    if (flavor === "dawn") {
+      assert.equal(
+        theme.colors["terminal.background"],
+        theme.colors["editor.background"],
+        `${flavor}: terminal.background is expected to match editor.background (bg_terminal == bg on dawn)`,
+      );
+    } else {
+      assert.notEqual(
+        theme.colors["terminal.background"],
+        theme.colors["editor.background"],
+        `${flavor}: terminal.background must not match editor.background`,
+      );
+    }
     // terminalCursor.background must track terminal.background exactly —
     // it's the color painted under a block cursor, so any mismatch would
     // show as a mis-colored cell.
