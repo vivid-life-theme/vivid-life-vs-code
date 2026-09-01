@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-09-01
+
+### Changed
+
+- design-system dependency bumped to 0.7.0; all 24 themes regenerated. Twilight and Dawn now have their own ANSI shade rungs instead of sharing them with other flavors — `twilight.bg_terminal` becomes a dedicated literal (`#333333`), and `dawn.bg_terminal` now equals `bg` (`#d4d4d4`). Midnight and Noon are unaffected.
+
+### Fixed
+
+- `terminal.background` no longer bit-identical to `editor.background` on Twilight, closing the remaining flavor from the terminal-panel distinction fix in 0.2.4. Dawn keeps the equality deliberately — its ANSI normal set can't go lighter than `#d2d2d2` without dropping below AA — with the terminal panel still reading as a distinct region via its border and `panel.background` chrome.
+
 ## [0.2.5] - 2026-08-27
 
 ### Added
