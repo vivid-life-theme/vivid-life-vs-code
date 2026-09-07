@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-09-07
+
+### Changed
+
+- design-system dependency bumped to 0.9.0; all 24 themes regenerated. `input.border`, `dropdown.border`, `checkbox.border`, `button.border`, `panelInput.border`, and the four `settings.*Border` tokens now use the new `border.control` token instead of `border.default` — `border.default` fails WCAG 1.4.11 (3:1 non-text contrast) against every surface on every flavor, and `border.control` is the dedicated per-flavor value verified to clear it.
+
 ## [0.2.6] - 2026-09-01
 
 ### Changed
