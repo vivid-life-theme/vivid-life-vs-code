@@ -293,17 +293,17 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "button.secondaryBackground": surface.bg_overlay,
     "button.secondaryForeground": text.fg,
     "button.secondaryHoverBackground": surface.bg_soft,
-    "button.border": border.default,
+    "button.border": border.control,
     "checkbox.background": surface.bg_overlay,
     "checkbox.foreground": text.fg,
-    "checkbox.border": border.default,
+    "checkbox.border": border.control,
     "checkbox.selectBackground": accent,
     "checkbox.selectBorder": accent,
 
     // inputs
     "input.background": surface.bg_overlay,
     "input.foreground": text.fg,
-    "input.border": border.default,
+    "input.border": border.control,
     "input.placeholderForeground": text.fg_subtle,
     "inputOption.activeBackground": withAlpha(accent, ALPHA.a25),
     "inputOption.activeBorder": accent,
@@ -322,7 +322,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // dropdown
     "dropdown.background": surface.bg_overlay,
     "dropdown.foreground": text.fg,
-    "dropdown.border": border.default,
+    "dropdown.border": border.control,
     "dropdown.listBackground": surface.bg_overlay,
 
     // lists & trees
@@ -401,7 +401,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "panelTitle.activeBorder": accent,
     "panelTitle.activeForeground": text.fg,
     "panelTitle.inactiveForeground": text.fg_subtle,
-    "panelInput.border": border.default,
+    "panelInput.border": border.control,
     "panelSection.border": border.subtle,
     // Section headers now read as the lighter surface.bg step, inverted from
     // before, to keep internal contrast now that panel.background is sunk.
@@ -548,16 +548,16 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "settings.modifiedItemIndicator": accent,
     "settings.dropdownBackground": surface.bg_overlay,
     "settings.dropdownForeground": text.fg,
-    "settings.dropdownBorder": border.default,
+    "settings.dropdownBorder": border.control,
     "settings.checkboxBackground": surface.bg_overlay,
     "settings.checkboxForeground": text.fg,
-    "settings.checkboxBorder": border.default,
+    "settings.checkboxBorder": border.control,
     "settings.textInputBackground": surface.bg_overlay,
     "settings.textInputForeground": text.fg,
-    "settings.textInputBorder": border.default,
+    "settings.textInputBorder": border.control,
     "settings.numberInputBackground": surface.bg_overlay,
     "settings.numberInputForeground": text.fg,
-    "settings.numberInputBorder": border.default,
+    "settings.numberInputBorder": border.control,
 
     // debug
     "debugToolBar.background": surface.bg_overlay,
