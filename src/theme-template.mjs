@@ -22,6 +22,16 @@ function withAlpha(hex, alpha) {
   return `#${clean}${alpha}`;
 }
 
+// Foundation overlay recipe ({ color, alpha }) -> #rrggbbaa.
+function overlayHex({ color, alpha }) {
+  return withAlpha(
+    color,
+    Math.round(alpha * 255)
+      .toString(16)
+      .padStart(2, "0"),
+  );
+}
+
 function resolveAccent(tokens, flavor, variant) {
   const shade = tokens.accent_shade[flavor][variant];
   return tokens.palette[variant][shade];
@@ -68,6 +78,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
   const { surface, text, border, state, semantic, ansi } = f;
   const isDark = f.type === "dark";
   const accent = resolveAccent(tokens, flavor, variant);
+  const overlay = f.overlay[variant];
   const accentOn = isDark
     ? tokens.palette.gray["900"]
     : tokens.palette.gray["100"];
@@ -90,7 +101,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     errorForeground: semantic.danger,
     focusBorder: accent,
     "widget.shadow": surface.bg_scrim,
-    "selection.background": withAlpha(accent, ALPHA.a25),
+    "selection.background": overlayHex(overlay.selection),
 
     // window
     "window.activeBorder": border.default,
@@ -101,26 +112,21 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "editor.foreground": text.fg,
     "editorLineNumber.foreground": text.fg_subtle,
     "editorLineNumber.activeForeground": text.fg,
-    "editor.lineHighlightBackground": state.hover,
+    "editor.lineHighlightBackground": overlayHex(overlay.line_highlight),
     "editor.lineHighlightBorder": "#00000000",
-    "editor.selectionBackground": withAlpha(accent, ALPHA.a25),
+    "editor.selectionBackground": overlayHex(overlay.selection),
     "editor.selectionHighlightBackground": withAlpha(accent, ALPHA.a15),
-    "editor.inactiveSelectionBackground": withAlpha(accent, ALPHA.a15),
-    // Word highlight (symbol-occurrences-at-cursor) uses cyan — palette-reserved
-    // outside variant_hues so it never collides with the selection accent.
-    // Two alphas distinguish read vs write access.
-    "editor.wordHighlightBackground": withAlpha(
-      tokens.palette.cyan[isDark ? "500" : "700"],
-      ALPHA.a25,
+    "editor.inactiveSelectionBackground": overlayHex(
+      overlay.inactive_selection,
     ),
-    "editor.wordHighlightStrongBackground": withAlpha(
-      tokens.palette.cyan[isDark ? "300" : "900"],
-      ALPHA.a40,
+    "editor.wordHighlightBackground": overlayHex(overlay.word_highlight_read),
+    "editor.wordHighlightStrongBackground": overlayHex(
+      overlay.word_highlight_write,
     ),
-    // findMatch uses semantic.warning so the cursored match stands out
-    // against accent-tinted selection (which would otherwise collapse).
-    "editor.findMatchBackground": withAlpha(semantic.warning, ALPHA.a40),
-    "editor.findMatchHighlightBackground": withAlpha(accent, ALPHA.a20),
+    "editor.findMatchBackground": overlayHex(overlay.find_match),
+    "editor.findMatchBorder": overlay.find_match.border,
+    "editor.findMatchHighlightBackground": overlayHex(overlay.find_match_other),
+    "editor.findMatchHighlightBorder": overlay.find_match_other.border,
     "editor.findRangeHighlightBackground": withAlpha(accent, ALPHA.a10),
     "editor.hoverHighlightBackground": withAlpha(accent, ALPHA.a15),
     "editor.rangeHighlightBackground": state.hover,
@@ -280,7 +286,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "menubar.selectionBorder": "#00000000",
     "menu.background": surface.bg_overlay,
     "menu.foreground": text.fg,
-    "menu.selectionBackground": state.selection,
+    "menu.selectionBackground": overlayHex(overlay.selected),
     "menu.selectionForeground": text.fg,
     "menu.selectionBorder": "#00000000",
     "menu.separatorBackground": border.subtle,
@@ -326,15 +332,15 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "dropdown.listBackground": surface.bg_overlay,
 
     // lists & trees
-    "list.activeSelectionBackground": state.selection,
+    "list.activeSelectionBackground": overlayHex(overlay.selected),
     "list.activeSelectionForeground": text.fg,
     "list.activeSelectionIconForeground": accent,
-    "list.inactiveSelectionBackground": state.selection,
+    "list.inactiveSelectionBackground": overlayHex(overlay.selected),
     "list.inactiveSelectionForeground": text.fg_muted,
     "list.inactiveSelectionIconForeground": text.fg_muted,
     "list.hoverBackground": state.hover,
     "list.hoverForeground": text.fg,
-    "list.focusBackground": state.selection,
+    "list.focusBackground": overlayHex(overlay.selected),
     "list.focusForeground": text.fg,
     "list.focusOutline": accent,
     "list.focusHighlightForeground": accent,
@@ -417,10 +423,16 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "terminal.foreground": text.fg,
     "terminal.background": surface.bg_terminal,
     "terminal.border": border.subtle,
-    "terminal.selectionBackground": withAlpha(accent, ALPHA.a30),
-    "terminal.inactiveSelectionBackground": withAlpha(accent, ALPHA.a15),
-    "terminal.findMatchBackground": withAlpha(semantic.warning, ALPHA.a40),
-    "terminal.findMatchHighlightBackground": withAlpha(accent, ALPHA.a20),
+    "terminal.selectionBackground": overlay.selection.terminal.flat,
+    "terminal.selectionForeground": overlay.selection.terminal.foreground,
+    "terminal.inactiveSelectionBackground":
+      overlay.inactive_selection.terminal.flat,
+    "terminal.findMatchBackground": overlayHex(overlay.find_match),
+    "terminal.findMatchBorder": overlay.find_match.border,
+    "terminal.findMatchHighlightBackground": overlayHex(
+      overlay.find_match_other,
+    ),
+    "terminal.findMatchHighlightBorder": overlay.find_match_other.border,
     "terminalCursor.foreground": accent,
     "terminalCursor.background": surface.bg_terminal,
     "terminal.ansiBlack": ansi.black,
@@ -453,17 +465,15 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "gitDecoration.submoduleResourceForeground": text.fg_subtle,
 
     // diff editor
-    "diffEditor.insertedTextBackground": withAlpha(semantic.success, ALPHA.a15),
-    "diffEditor.removedTextBackground": withAlpha(semantic.danger, ALPHA.a15),
-    "diffEditor.insertedLineBackground": withAlpha(semantic.success, ALPHA.a10),
-    "diffEditor.removedLineBackground": withAlpha(semantic.danger, ALPHA.a10),
-    "diffEditorGutter.insertedLineBackground": withAlpha(
-      semantic.success,
-      ALPHA.a20,
+    "diffEditor.insertedTextBackground": overlayHex(overlay.diff_inserted_text),
+    "diffEditor.removedTextBackground": overlayHex(overlay.diff_removed_text),
+    "diffEditor.insertedLineBackground": overlayHex(overlay.diff_inserted_line),
+    "diffEditor.removedLineBackground": overlayHex(overlay.diff_removed_line),
+    "diffEditorGutter.insertedLineBackground": overlayHex(
+      overlay.diff_inserted_gutter,
     ),
-    "diffEditorGutter.removedLineBackground": withAlpha(
-      semantic.danger,
-      ALPHA.a20,
+    "diffEditorGutter.removedLineBackground": overlayHex(
+      overlay.diff_removed_gutter,
     ),
     "diffEditorOverview.insertedForeground": withAlpha(
       semantic.success,
@@ -493,7 +503,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "peekViewResult.fileForeground": text.fg,
     "peekViewResult.lineForeground": text.fg_muted,
     "peekViewResult.matchHighlightBackground": withAlpha(accent, ALPHA.a30),
-    "peekViewResult.selectionBackground": state.selection,
+    "peekViewResult.selectionBackground": overlayHex(overlay.selected),
     "peekViewResult.selectionForeground": text.fg,
     "peekViewTitle.background": surface.bg_sunk,
     "peekViewTitleDescription.foreground": text.fg_subtle,
@@ -516,7 +526,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "editorSuggestWidget.foreground": text.fg,
     "editorSuggestWidget.highlightForeground": accent,
     "editorSuggestWidget.focusHighlightForeground": accent,
-    "editorSuggestWidget.selectedBackground": state.selection,
+    "editorSuggestWidget.selectedBackground": overlayHex(overlay.selected),
     "editorSuggestWidget.selectedForeground": text.fg,
     "editorSuggestWidget.selectedIconForeground": accent,
     "editorHoverWidget.background": surface.bg_overlay,
@@ -527,7 +537,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // quick input (Cmd+P, Cmd+Shift+P)
     "quickInput.background": surface.bg_overlay,
     "quickInput.foreground": text.fg,
-    "quickInputList.focusBackground": state.selection,
+    "quickInputList.focusBackground": overlayHex(overlay.selected),
     "quickInputList.focusForeground": text.fg,
     "quickInputList.focusIconForeground": accent,
     "quickInputTitle.background": surface.bg_sunk,
@@ -624,7 +634,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "notebook.inactiveFocusedCellBorder": border.default,
     "notebook.inactiveSelectedCellBorder": border.default,
     "notebook.outputContainerBackgroundColor": surface.bg_sunk,
-    "notebook.selectedCellBackground": state.selection,
+    "notebook.selectedCellBackground": overlayHex(overlay.selected),
     "notebook.selectedCellBorder": border.default,
     "notebook.symbolHighlightBackground": withAlpha(accent, ALPHA.a15),
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- design-system dependency bumped to 0.11.0; all 24 themes regenerated. Selection, inactive selection, line highlight, find match (now with borders), word highlight, diff and terminal selection colors come from the foundation's new `overlay` recipes instead of port-side alpha steps, and `terminal.selectionForeground` is set. Several syntax colors, the Midnight/Twilight comment color and Midnight ANSI blue/magenta also change upstream.
+
+### Fixed
+
+- Eight list/menu/notebook selection colors (`list.activeSelectionBackground`, `menu.selectionBackground`, …) read the removed `state.selection` token and would have been silently dropped; they now use `overlay.selected`.
+
 ## [0.2.7] - 2026-09-07
 
 ### Changed
