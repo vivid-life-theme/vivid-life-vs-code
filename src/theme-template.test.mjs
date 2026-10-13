@@ -104,6 +104,13 @@ test("Language-specific tokens", () => {
 
   const escape = findRule(theme, "Escape sequence");
   assert.equal(escape.foreground, syntax.keyword);
+  const escapeScopes = theme.tokenColors.find(
+    (r) => r.name === "Escape sequence",
+  ).scope;
+  assert.ok(
+    escapeScopes.includes("constant.character.format.placeholder"),
+    "Python f-string {name} shares the escape rule",
+  );
 
   const shellVar = findRule(theme, "Shell variable");
   assert.equal(shellVar.foreground, syntax.keyword);

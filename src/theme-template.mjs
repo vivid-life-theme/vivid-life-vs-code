@@ -693,9 +693,14 @@ function buildTokenColors(scopeRecs, extended, syntax, textFg, semanticDanger) {
       ],
       settings: { foreground: syntax.keyword },
     },
+    // Format placeholders ({name} in a Python f-string, %s) sit in the
+    // string like an escape and take the same colour.
     {
       name: "Escape sequence",
-      scope: ["constant.character.escape"],
+      scope: [
+        "constant.character.escape",
+        "constant.character.format.placeholder",
+      ],
       settings: { foreground: syntax.keyword },
     },
     {
