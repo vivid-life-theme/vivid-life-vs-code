@@ -78,7 +78,7 @@ npm test        # verify the mapping
 npm run format  # prettier
 ```
 
-To preview locally, press `F5` in VS Code (Extension Development Host) and switch themes inside the dev window.
+To preview locally, press `F5` in VS Code (Extension Development Host) and switch themes inside the dev window. Yes, it's an editor inside an editor. Inception rules apply: don't get lost in there.
 
 Edit `src/theme-template.mjs` to change how foundation tokens map to VS Code's workbench and token colors. Never hand-edit files under `themes/`: they're generated, and the next build will flatten your changes faster than you can type `git blame`.
 
