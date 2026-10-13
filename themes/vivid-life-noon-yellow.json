@@ -827,7 +827,8 @@
     {
       "name": "Escape sequence",
       "scope": [
-        "constant.character.escape"
+        "constant.character.escape",
+        "constant.character.format.placeholder"
       ],
       "settings": {
         "foreground": "#7e22ce"
