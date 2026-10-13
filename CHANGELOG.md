@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- design-system dependency bumped to 0.13.0; all 24 themes regenerated. New `primitive_type` token rule (`int`, `bool`, `string` and kin in C#, C, C++, Java, Go), a catch-all `keyword` scope so Go's `func`/`var`/`struct`/`package` and C# preprocessor keywords no longer fall back to the foreground, and extra scopes for Java class references, C#/C++ enum members, C# parameters, C++ `std::`, Python `self` and F# operators. No colour values change.
+
 ## [0.3.0] - 2026-10-01
 
 ### Changed
