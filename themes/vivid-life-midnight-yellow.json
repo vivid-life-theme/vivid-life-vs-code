@@ -451,8 +451,10 @@
       "scope": [
         "keyword.control",
         "keyword.other",
+        "keyword.type.go",
         "storage.type",
-        "storage.modifier"
+        "storage.modifier",
+        "keyword"
       ],
       "settings": {
         "foreground": "#d8b4fe"
@@ -492,7 +494,8 @@
     {
       "name": "parameter",
       "scope": [
-        "variable.parameter"
+        "variable.parameter",
+        "entity.name.variable.parameter"
       ],
       "settings": {
         "foreground": "#fdba74",
@@ -504,8 +507,12 @@
       "scope": [
         "entity.name.type",
         "entity.name.class",
+        "entity.other.inherited-class",
         "support.class",
-        "support.type"
+        "support.type",
+        "storage.type.java",
+        "storage.type.generic.java",
+        "storage.type.object.array.java"
       ],
       "settings": {
         "foreground": "#eab308"
@@ -514,7 +521,9 @@
     {
       "name": "constant",
       "scope": [
-        "constant.other"
+        "constant.other",
+        "entity.name.variable.enum-member",
+        "variable.other.enummember"
       ],
       "settings": {
         "foreground": "#f97316"
@@ -592,7 +601,8 @@
     {
       "name": "operator",
       "scope": [
-        "keyword.operator"
+        "keyword.operator",
+        "keyword.symbol"
       ],
       "settings": {
         "foreground": "#d8b4fe"
@@ -614,7 +624,26 @@
       "name": "namespace",
       "scope": [
         "entity.name.namespace",
-        "entity.name.module"
+        "entity.name.module",
+        "entity.name.scope-resolution"
+      ],
+      "settings": {
+        "foreground": "#eab308"
+      }
+    },
+    {
+      "name": "primitive_type",
+      "scope": [
+        "keyword.type",
+        "storage.type.primitive",
+        "storage.type.built-in",
+        "storage.type.numeric.go",
+        "storage.type.boolean.go",
+        "storage.type.byte.go",
+        "storage.type.error.go",
+        "storage.type.rune.go",
+        "storage.type.string.go",
+        "storage.type.uintptr.go"
       ],
       "settings": {
         "foreground": "#eab308"
@@ -767,6 +796,7 @@
       "scope": [
         "variable.language.this",
         "variable.language.self",
+        "variable.language.special.self",
         "variable.language.super"
       ],
       "settings": {
