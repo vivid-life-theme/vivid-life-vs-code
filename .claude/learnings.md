@@ -1,0 +1,1 @@
+[claude:note] VS Code port design questions (frame, chrome text, sidebar/panel layout) are already settled by the approved mockups in `vivid-life-design-system/.superpowers/brainstorm/*/content/frames-*-v3.html` plus the design-system specs; read them before asking the user or suggesting visual checks (corrected) — 2026-11-16

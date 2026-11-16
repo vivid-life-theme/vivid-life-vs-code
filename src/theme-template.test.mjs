@@ -1,8 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import tokens from "@vivid-life-theme/design-system";
-import { contrast } from "@vivid-life-theme/design-system/tools/build-tokens";
+import {
+  contrast,
+  resolveOverlay,
+} from "@vivid-life-theme/design-system/tools/build-tokens";
 import { buildTheme } from "./theme-template.mjs";
+
+const FLAVORS = ["midnight", "twilight", "dawn", "noon"];
+const VARIANTS = tokens.variant_hues;
 
 // Look up a tokenColors entry by its `name` field.
 function findRule(theme, name) {
@@ -191,92 +197,184 @@ test("Status bar remote item uses reserved ansi.cyan and accent-on-style text �
   }
 });
 
-test("Panel background is distinct from editor background — all 4 flavors", () => {
-  const flavors = ["midnight", "twilight", "dawn", "noon"];
-  for (const flavor of flavors) {
-    const theme = buildTheme(flavor, "purple", tokens);
-    const f = tokens.flavors[flavor];
-    assert.equal(
-      theme.colors["panel.background"],
-      f.surface.bg_sunk,
-      `${flavor}: panel.background should be surface.bg_sunk (${f.surface.bg_sunk})`,
-    );
-    assert.notEqual(
-      theme.colors["panel.background"],
-      theme.colors["editor.background"],
-      `${flavor}: panel.background must not match editor.background — that's the bug this test guards against`,
-    );
-    // terminal.background uses surface.bg_terminal (design-system 0.6.0+),
-    // the surface tier verified against all 16 ansi.* colors per flavor —
-    // see vivid-life-design-system issue #5. It's distinct from
-    // panel.background on all 4 flavors.
-    assert.equal(
-      theme.colors["terminal.background"],
-      f.surface.bg_terminal,
-      `${flavor}: terminal.background should be surface.bg_terminal (${f.surface.bg_terminal})`,
-    );
-    // On dawn only, bg_terminal == bg (design-system 0.7.0 / issue #7):
-    // dawn's ANSI normal set can't go lighter than #d2d2d2 without dropping
-    // below AA, and everything above that collides with noon, so dawn's
-    // terminal fill fell back to the flavor canvas. In this embedded port
-    // the terminal panel still reads as a distinct region via bg_inset
-    // chrome + border, just not via fill — see the design-system README's
-    // "Dawn's terminal panel has no fill of its own" caveat.
-    if (flavor === "dawn") {
+test("Panel background is the frame, distinct from editor and terminal — all 24 themes", () => {
+  for (const flavor of FLAVORS) {
+    for (const variant of VARIANTS) {
+      const theme = buildTheme(flavor, variant, tokens);
+      const f = tokens.flavors[flavor];
+      const id = `${flavor}/${variant}`;
+      assert.equal(
+        theme.colors["panel.background"],
+        f.frame[variant].bg,
+        `${id}: panel.background should be the frame (${f.frame[variant].bg})`,
+      );
+      assert.notEqual(
+        theme.colors["panel.background"],
+        theme.colors["editor.background"],
+        `${id}: panel.background must not match editor.background — that's the bug this test guards against`,
+      );
+      // Since design-system 0.14.0 bg_terminal == bg on every flavor: editor
+      // and terminal share one background, and the panel's tab row (drawn in
+      // panel.background, the frame) is what separates them.
       assert.equal(
         theme.colors["terminal.background"],
-        theme.colors["editor.background"],
-        `${flavor}: terminal.background is expected to match editor.background (bg_terminal == bg on dawn)`,
+        f.surface.bg_terminal,
+        `${id}: terminal.background should be surface.bg_terminal (${f.surface.bg_terminal})`,
       );
-    } else {
       assert.notEqual(
         theme.colors["terminal.background"],
-        theme.colors["editor.background"],
-        `${flavor}: terminal.background must not match editor.background`,
+        theme.colors["panel.background"],
+        `${id}: terminal.background must not match panel.background`,
       );
-    }
-    // terminalCursor.background must track terminal.background exactly —
-    // it's the color painted under a block cursor, so any mismatch would
-    // show as a mis-colored cell.
-    assert.equal(
-      theme.colors["terminalCursor.background"],
-      theme.colors["terminal.background"],
-      `${flavor}: terminalCursor.background must match terminal.background`,
-    );
-    // Section headers invert to surface.bg (the lighter step) so they stay
-    // readable against the now-darker panel.background.
-    assert.equal(
-      theme.colors["panelSectionHeader.background"],
-      f.surface.bg,
-      `${flavor}: panelSectionHeader.background should be surface.bg (${f.surface.bg})`,
-    );
-    assert.notEqual(
-      theme.colors["panelSectionHeader.background"],
-      theme.colors["panel.background"],
-      `${flavor}: panelSectionHeader.background must not match panel.background`,
-    );
-    // panel.border/panelSection.border (border.subtle) are expected to stay
-    // distinct from panel.background on every flavor except Dawn, where
-    // border.subtle == bg_sunk is a pre-existing foundation-token coincidence
-    // (tab.border already collides with tab.inactiveBackground the same way
-    // on Dawn, unrelated to this file) — not something a different border
-    // token choice here can fix without trading it for a worse collision
-    // elsewhere (see the PR discussion for the full token comparison).
-    for (const key of ["panel.border", "panelSection.border"]) {
-      if (flavor === "dawn") {
-        assert.equal(
-          theme.colors[key],
-          theme.colors["panel.background"],
-          `dawn: ${key} is expected to collide with panel.background (known, pre-existing border.subtle == bg_sunk coincidence)`,
-        );
-      } else {
+      // terminalCursor.background must track terminal.background exactly —
+      // it's the color painted under a block cursor, so any mismatch would
+      // show as a mis-colored cell.
+      assert.equal(
+        theme.colors["terminalCursor.background"],
+        theme.colors["terminal.background"],
+        `${id}: terminalCursor.background must match terminal.background`,
+      );
+      // Section headers take the grey surface.bg so they read apart from
+      // the coloured panel.background.
+      assert.equal(
+        theme.colors["panelSectionHeader.background"],
+        f.surface.bg,
+        `${id}: panelSectionHeader.background should be surface.bg (${f.surface.bg})`,
+      );
+      for (const key of ["panel.border", "panelSection.border"]) {
         assert.notEqual(
           theme.colors[key],
           theme.colors["panel.background"],
-          `${flavor}: ${key} must not match panel.background`,
+          `${id}: ${key} must not match panel.background`,
         );
       }
     }
+  }
+});
+
+// Frame port rules (design-system README → Frame): text on the frame clears
+// 4.5:1 (fg / fg_muted / frame.accent_text, never fg_subtle), bars, badges and
+// indicators on it clear 3:1, and every chrome pane named in the frame spec
+// actually takes the frame colour.
+test("Frame chrome and the text on it meet the foundation's port rules — all 24 themes", () => {
+  const frameKeys = [
+    "titleBar.activeBackground",
+    "titleBar.inactiveBackground",
+    "activityBar.background",
+    "sideBar.background",
+    "sideBarSectionHeader.background",
+    "editorGroupHeader.tabsBackground",
+    "editorGroupHeader.noTabsBackground",
+    "tab.inactiveBackground",
+    "statusBar.background",
+    "statusBar.noFolderBackground",
+    "panel.background",
+  ];
+  const textKeys = [
+    "titleBar.activeForeground",
+    "titleBar.inactiveForeground",
+    "activityBar.foreground",
+    "activityBar.inactiveForeground",
+    "sideBar.foreground",
+    "sideBarTitle.foreground",
+    "sideBarSectionHeader.foreground",
+    "statusBar.noFolderForeground",
+    "tab.inactiveForeground",
+    "tab.unfocusedInactiveForeground",
+    "statusBar.foreground",
+    "panelTitle.activeForeground",
+    "panelTitle.inactiveForeground",
+    "descriptionForeground",
+    "list.deemphasizedForeground",
+    "list.highlightForeground",
+    "list.focusHighlightForeground",
+    "gitDecoration.addedResourceForeground",
+    "gitDecoration.modifiedResourceForeground",
+    "gitDecoration.deletedResourceForeground",
+    "gitDecoration.conflictingResourceForeground",
+    "gitDecoration.submoduleResourceForeground",
+  ];
+  const markKeys = [
+    "activityBar.activeBorder",
+    "activityBarBadge.background",
+    "statusBar.border",
+    "panelTitle.activeBorder",
+  ];
+  for (const flavor of FLAVORS) {
+    for (const variant of VARIANTS) {
+      const c = buildTheme(flavor, variant, tokens).colors;
+      const frame = tokens.flavors[flavor].frame[variant].bg;
+      const id = `${flavor}/${variant}`;
+      for (const key of frameKeys) {
+        assert.equal(c[key], frame, `${id}: ${key} should be the frame`);
+      }
+      for (const key of textKeys) {
+        const ratio = contrast(frame, c[key]);
+        assert.ok(
+          ratio >= 4.5,
+          `${id}: ${key} (${c[key]}) is ${ratio.toFixed(2)}:1 on the frame (${frame})`,
+        );
+      }
+      for (const key of markKeys) {
+        const ratio = contrast(frame, c[key]);
+        assert.ok(
+          ratio >= 3,
+          `${id}: ${key} (${c[key]}) is ${ratio.toFixed(2)}:1 on the frame (${frame})`,
+        );
+      }
+      // A selected-but-unfocused sidebar row draws fg_muted on the selected
+      // wash composited over the frame.
+      const wash = resolveOverlay(tokens, flavor, variant, "selected", {
+        surface: "frame",
+      }).flat;
+      const ratio = contrast(wash, c["list.inactiveSelectionForeground"]);
+      assert.ok(
+        ratio >= 4.5,
+        `${id}: list.inactiveSelectionForeground is ${ratio.toFixed(2)}:1 on the selected wash over the frame (${wash})`,
+      );
+    }
+  }
+});
+
+test("No port-side alpha: every translucent colour comes from a foundation overlay recipe — all 24 themes", () => {
+  for (const flavor of FLAVORS) {
+    for (const variant of VARIANTS) {
+      const c = buildTheme(flavor, variant, tokens).colors;
+      const recipes = new Set(
+        Object.values(tokens.flavors[flavor].overlay[variant]).map(
+          (r) => r.hexa,
+        ),
+      );
+      // Fixed, documented exceptions that aren't washes.
+      const allowed = new Set([
+        "editor.lineHighlightBorder",
+        "tab.activeBorder",
+        "menubar.selectionBorder",
+        "menu.selectionBorder",
+        "editorUnnecessaryCode.opacity",
+        "widget.shadow",
+        "scrollbar.shadow",
+      ]);
+      for (const [key, value] of Object.entries(c)) {
+        if (value.length !== 9 || allowed.has(key)) continue;
+        assert.ok(
+          recipes.has(value),
+          `${flavor}/${variant}: ${key} (${value}) is translucent but not a foundation overlay recipe`,
+        );
+      }
+    }
+  }
+});
+
+// Retained from the pre-frame test: the editor/terminal background contract.
+test("terminal.background equals editor.background — all 4 flavors", () => {
+  for (const flavor of FLAVORS) {
+    const theme = buildTheme(flavor, "purple", tokens);
+    assert.equal(
+      theme.colors["terminal.background"],
+      theme.colors["editor.background"],
+      `${flavor}: bg_terminal == bg since design-system 0.14.0`,
+    );
   }
 });
 

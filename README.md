@@ -50,7 +50,7 @@ In time-of-day order. The canvas is the editor background; the integrated termin
 
 ## Variants
 
-Each flavor comes in six accent variants: **Red · Orange · Yellow · Green · Blue · Purple**. The variant only re-tints the accent (cursor, focus ring, status bar, badges); the syntax-token map stays put across variants, so a file's "shape" reads the same whether you're in Midnight · Blue or Noon · Yellow. Your muscle memory for "strings are that color" survives a theme switch.
+Each flavor comes in six accent variants: **Red · Orange · Yellow · Green · Blue · Purple**. The variant colours the frame around your work (title bar, activity bar, tabs, sidebar, status bar, panel) and re-tints the accent (cursor, focus ring, selection, badges), while the editor and terminal keep the flavor's grey. The syntax-token map stays put across variants, so a file's "shape" reads the same whether you're in Midnight · Blue or Noon · Yellow. Your muscle memory for "strings are that color" survives a theme switch.
 
 ## Install
 

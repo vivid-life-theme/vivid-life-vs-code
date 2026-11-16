@@ -1,37 +1,6 @@
 // Maps Vivid Life foundation tokens to a VS Code color theme.
 // One pure function: (flavor, variant, tokens) -> theme JSON object.
 
-const ALPHA = {
-  a10: "1a",
-  a15: "26",
-  a20: "33",
-  a25: "40",
-  a30: "4d",
-  a40: "66",
-  a50: "80",
-  a60: "99",
-  a70: "b3",
-  a90: "e6",
-};
-
-function withAlpha(hex, alpha) {
-  const clean = hex.startsWith("#") ? hex.slice(1) : hex;
-  if (clean.length !== 6) {
-    throw new Error(`withAlpha expects 6-digit hex, got "${hex}"`);
-  }
-  return `#${clean}${alpha}`;
-}
-
-// Foundation overlay recipe ({ color, alpha }) -> #rrggbbaa.
-function overlayHex({ color, alpha }) {
-  return withAlpha(
-    color,
-    Math.round(alpha * 255)
-      .toString(16)
-      .padStart(2, "0"),
-  );
-}
-
 function resolveAccent(tokens, flavor, variant) {
   const shade = tokens.accent_shade[flavor][variant];
   return tokens.palette[variant][shade];
@@ -75,14 +44,21 @@ function buildGeneratedTokenRules(
 
 function buildWorkbenchColors(tokens, flavor, variant) {
   const f = tokens.flavors[flavor];
-  const { surface, text, border, state, semantic, ansi } = f;
+  const { surface, text, border, semantic, ansi } = f;
   const isDark = f.type === "dark";
   const accent = resolveAccent(tokens, flavor, variant);
+  // Every wash and mark is a gated foundation recipe; `o.<role>` is its
+  // #rrggbbaa form. The two `fill` roles are solid and read `.flat`.
   const overlay = f.overlay[variant];
-  const accentOn = isDark
-    ? tokens.palette.gray["900"]
-    : tokens.palette.gray["100"];
-  const subtleAlpha = isDark ? ALPHA.a30 : ALPHA.a40;
+  const o = Object.fromEntries(
+    Object.entries(overlay).map(([name, recipe]) => [name, recipe.hexa]),
+  );
+  const accentOn = f.accent_on;
+  // The frame carries the variant's colour around the grey work areas (title
+  // bar, activity bar, tab strip, sidebar, status bar, panel tab row). Text on
+  // it is fg / fg_muted only — never fg_subtle — and accent-hued text uses
+  // frame.accent_text, not the accent.
+  const frame = f.frame[variant];
 
   // Debug-state background must differ from accent so the debug bar (and the
   // accent-colored remote chip sitting on it) don't dissolve. For yellow/orange
@@ -97,11 +73,11 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // base
     foreground: text.fg,
     "icon.foreground": text.fg_muted,
-    descriptionForeground: text.fg_subtle,
+    descriptionForeground: text.fg_muted,
     errorForeground: semantic.danger,
     focusBorder: accent,
     "widget.shadow": surface.bg_scrim,
-    "selection.background": overlayHex(overlay.selection),
+    "selection.background": o.selection,
 
     // window
     "window.activeBorder": border.default,
@@ -112,44 +88,34 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "editor.foreground": text.fg,
     "editorLineNumber.foreground": text.fg_subtle,
     "editorLineNumber.activeForeground": text.fg,
-    "editor.lineHighlightBackground": overlayHex(overlay.line_highlight),
+    "editor.lineHighlightBackground": o.line_highlight,
     "editor.lineHighlightBorder": "#00000000",
-    "editor.selectionBackground": overlayHex(overlay.selection),
-    "editor.selectionHighlightBackground": withAlpha(accent, ALPHA.a15),
-    "editor.inactiveSelectionBackground": overlayHex(
-      overlay.inactive_selection,
-    ),
-    "editor.wordHighlightBackground": overlayHex(overlay.word_highlight_read),
-    "editor.wordHighlightStrongBackground": overlayHex(
-      overlay.word_highlight_write,
-    ),
-    "editor.findMatchBackground": overlayHex(overlay.find_match),
+    "editor.selectionBackground": o.selection,
+    "editor.selectionHighlightBackground": o.highlight,
+    "editor.inactiveSelectionBackground": o.inactive_selection,
+    "editor.wordHighlightBackground": o.word_highlight_read,
+    "editor.wordHighlightStrongBackground": o.word_highlight_write,
+    "editor.findMatchBackground": o.find_match,
     "editor.findMatchBorder": overlay.find_match.border,
-    "editor.findMatchHighlightBackground": overlayHex(overlay.find_match_other),
+    "editor.findMatchHighlightBackground": o.find_match_other,
     "editor.findMatchHighlightBorder": overlay.find_match_other.border,
-    "editor.findRangeHighlightBackground": withAlpha(accent, ALPHA.a10),
-    "editor.hoverHighlightBackground": withAlpha(accent, ALPHA.a15),
-    "editor.rangeHighlightBackground": state.hover,
-    "editor.symbolHighlightBackground": withAlpha(accent, ALPHA.a20),
+    "editor.findRangeHighlightBackground": o.find_range,
+    "editor.hoverHighlightBackground": o.highlight,
+    "editor.rangeHighlightBackground": o.highlight,
+    "editor.symbolHighlightBackground": o.symbol_highlight,
     "editorCursor.foreground": accent,
     "editorWhitespace.foreground": text.fg_disabled,
     "editorIndentGuide.background1": border.subtle,
     "editorIndentGuide.activeBackground1": border.default,
     "editorRuler.foreground": border.subtle,
     "editorCodeLens.foreground": text.fg_subtle,
-    "editorBracketMatch.background": withAlpha(accent, ALPHA.a20),
+    "editorBracketMatch.background": o.symbol_highlight,
     "editorBracketMatch.border": accent,
     "editorOverviewRuler.border": border.subtle,
-    "editorOverviewRuler.findMatchForeground": withAlpha(accent, ALPHA.a60),
-    "editorOverviewRuler.rangeHighlightForeground": withAlpha(
-      accent,
-      ALPHA.a40,
-    ),
-    "editorOverviewRuler.selectionHighlightForeground": withAlpha(
-      accent,
-      ALPHA.a40,
-    ),
-    "editorOverviewRuler.wordHighlightForeground": withAlpha(accent, ALPHA.a40),
+    "editorOverviewRuler.findMatchForeground": o.ruler_find,
+    "editorOverviewRuler.rangeHighlightForeground": o.mark,
+    "editorOverviewRuler.selectionHighlightForeground": o.mark,
+    "editorOverviewRuler.wordHighlightForeground": o.mark,
     "editorOverviewRuler.modifiedForeground": semantic.info,
     "editorOverviewRuler.addedForeground": semantic.success,
     "editorOverviewRuler.deletedForeground": semantic.danger,
@@ -189,41 +155,41 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // editor groups & tabs
     "editorGroup.border": border.subtle,
     "editorGroup.emptyBackground": surface.bg_sunk,
-    "editorGroupHeader.tabsBackground": surface.bg_sunk,
+    "editorGroupHeader.tabsBackground": frame.bg,
     "editorGroupHeader.tabsBorder": border.subtle,
-    "editorGroupHeader.noTabsBackground": surface.bg_sunk,
+    "editorGroupHeader.noTabsBackground": frame.bg,
     "tab.activeBackground": surface.bg,
     "tab.activeForeground": text.fg,
     "tab.activeBorder": "#00000000",
     "tab.activeBorderTop": accent,
-    "tab.inactiveBackground": surface.bg_sunk,
-    "tab.inactiveForeground": text.fg_subtle,
+    "tab.inactiveBackground": frame.bg,
+    "tab.inactiveForeground": text.fg_muted,
     "tab.unfocusedActiveForeground": text.fg_muted,
-    "tab.unfocusedInactiveForeground": text.fg_subtle,
+    "tab.unfocusedInactiveForeground": text.fg_muted,
     "tab.border": border.subtle,
-    "tab.hoverBackground": surface.bg_soft,
+    "tab.hoverBackground": o.hover,
     "tab.hoverForeground": text.fg,
-    "tab.unfocusedHoverBackground": surface.bg_soft,
+    "tab.unfocusedHoverBackground": o.hover,
     "tab.activeModifiedBorder": semantic.warning,
     "tab.inactiveModifiedBorder": semantic.warning,
 
     // activity bar
-    "activityBar.background": surface.bg_sunk,
+    "activityBar.background": frame.bg,
     "activityBar.foreground": text.fg,
-    "activityBar.inactiveForeground": text.fg_subtle,
-    "activityBar.activeBorder": withAlpha(accent, ALPHA.a90),
-    "activityBar.activeBackground": state.hover,
+    "activityBar.inactiveForeground": text.fg_muted,
+    "activityBar.activeBorder": accent,
+    "activityBar.activeBackground": o.active,
     "activityBar.border": border.subtle,
     "activityBarBadge.background": accent,
     "activityBarBadge.foreground": accentOn,
 
     // sidebar
-    "sideBar.background": surface.bg_sunk,
+    "sideBar.background": frame.bg,
     "sideBar.foreground": text.fg_muted,
     "sideBar.border": border.subtle,
-    "sideBar.dropBackground": state.active,
+    "sideBar.dropBackground": o.active,
     "sideBarTitle.foreground": text.fg,
-    "sideBarSectionHeader.background": surface.bg,
+    "sideBarSectionHeader.background": frame.bg,
     "sideBarSectionHeader.foreground": text.fg_muted,
     "sideBarSectionHeader.border": border.subtle,
 
@@ -231,25 +197,23 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // background, error/warning chips) stand out clearly. Folder-open is
     // signaled by a thin accent strip along the top edge via statusBar.border;
     // statusBar.noFolderBorder kills the strip when no folder is open.
-    "statusBar.background": surface.bg_sunk,
-    "statusBar.foreground": text.fg,
+    "statusBar.background": frame.bg,
+    "statusBar.foreground": text.fg_muted,
     "statusBar.border": accent,
-    "statusBar.noFolderBackground": surface.bg_sunk,
-    "statusBar.noFolderForeground": text.fg,
+    "statusBar.noFolderBackground": frame.bg,
+    "statusBar.noFolderForeground": text.fg_muted,
     "statusBar.noFolderBorder": border.subtle,
     "statusBar.debuggingBackground": debugBg,
     "statusBar.debuggingForeground": accentOn,
     "statusBar.debuggingBorder": border.subtle,
-    "statusBarItem.activeBackground": isDark ? "#ffffff26" : "#00000026",
-    "statusBarItem.hoverBackground": isDark ? "#ffffff1a" : "#0000001a",
+    "statusBarItem.activeBackground": o.active,
+    "statusBarItem.hoverBackground": o.hover,
     // "prominent" is what VS Code uses for the Workspace Trust "Restricted
     // Mode" badge (kind: 'prominent') — a soft warning that needs to stand
     // out from the rest of the status bar, so it shares warning's colors.
     "statusBarItem.prominentBackground": semantic.warning,
     "statusBarItem.prominentForeground": accentOn,
-    "statusBarItem.prominentHoverBackground": isDark
-      ? "#000000b3"
-      : "#00000066",
+    "statusBarItem.prominentHoverBackground": overlay.warning_hover.flat,
     // Remote indicator uses ansi.cyan — fixed per-flavor and outside
     // variant_hues, so it can't collide with semantic.danger/warning the way
     // the accent (which IS red/yellow on those variants) did. Same trick as
@@ -266,27 +230,24 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "statusBarItem.offlineForeground": accentOn,
 
     // terminal command decorations (shell integration gutter dots)
-    "terminalCommandDecoration.defaultBackground": withAlpha(
-      text.fg_subtle,
-      ALPHA.a40,
-    ),
+    "terminalCommandDecoration.defaultBackground": o.terminal_decoration,
     "terminalCommandDecoration.successBackground": semantic.success,
     "terminalCommandDecoration.errorBackground": semantic.danger,
 
     // title bar
-    "titleBar.activeBackground": surface.bg_sunk,
-    "titleBar.activeForeground": text.fg,
-    "titleBar.inactiveBackground": surface.bg_sunk,
-    "titleBar.inactiveForeground": text.fg_subtle,
+    "titleBar.activeBackground": frame.bg,
+    "titleBar.activeForeground": text.fg_muted,
+    "titleBar.inactiveBackground": frame.bg,
+    "titleBar.inactiveForeground": text.fg_muted,
     "titleBar.border": border.subtle,
 
     // menubar / menu
-    "menubar.selectionBackground": state.hover,
+    "menubar.selectionBackground": o.hover,
     "menubar.selectionForeground": text.fg,
     "menubar.selectionBorder": "#00000000",
     "menu.background": surface.bg_overlay,
     "menu.foreground": text.fg,
-    "menu.selectionBackground": overlayHex(overlay.selected),
+    "menu.selectionBackground": o.selected,
     "menu.selectionForeground": text.fg,
     "menu.selectionBorder": "#00000000",
     "menu.separatorBackground": border.subtle,
@@ -295,7 +256,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // buttons
     "button.background": accent,
     "button.foreground": accentOn,
-    "button.hoverBackground": withAlpha(accent, ALPHA.a90),
+    "button.hoverBackground": overlay.button_hover.flat,
     "button.secondaryBackground": surface.bg_overlay,
     "button.secondaryForeground": text.fg,
     "button.secondaryHoverBackground": surface.bg_soft,
@@ -311,17 +272,17 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "input.foreground": text.fg,
     "input.border": border.control,
     "input.placeholderForeground": text.fg_subtle,
-    "inputOption.activeBackground": withAlpha(accent, ALPHA.a25),
+    "inputOption.activeBackground": o.input_option_active,
     "inputOption.activeBorder": accent,
     "inputOption.activeForeground": text.fg,
-    "inputOption.hoverBackground": state.hover,
-    "inputValidation.errorBackground": withAlpha(semantic.danger, ALPHA.a20),
+    "inputOption.hoverBackground": o.hover,
+    "inputValidation.errorBackground": o.validation_error,
     "inputValidation.errorBorder": semantic.danger,
     "inputValidation.errorForeground": text.fg,
-    "inputValidation.warningBackground": withAlpha(semantic.warning, ALPHA.a20),
+    "inputValidation.warningBackground": o.validation_warning,
     "inputValidation.warningBorder": semantic.warning,
     "inputValidation.warningForeground": text.fg,
-    "inputValidation.infoBackground": withAlpha(semantic.info, ALPHA.a20),
+    "inputValidation.infoBackground": o.validation_info,
     "inputValidation.infoBorder": semantic.info,
     "inputValidation.infoForeground": text.fg,
 
@@ -332,23 +293,27 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "dropdown.listBackground": surface.bg_overlay,
 
     // lists & trees
-    "list.activeSelectionBackground": overlayHex(overlay.selected),
+    // Lists sit on the frame (sidebar), so accent-hued text and the accent
+    // cue next to the selected wash use frame.accent_text, which the
+    // foundation gates there. On bg_overlay (quick input) it is never worse
+    // than the plain accent.
+    "list.activeSelectionBackground": o.selected,
     "list.activeSelectionForeground": text.fg,
-    "list.activeSelectionIconForeground": accent,
-    "list.inactiveSelectionBackground": overlayHex(overlay.selected),
+    "list.activeSelectionIconForeground": frame.accent_text,
+    "list.inactiveSelectionBackground": o.selected,
     "list.inactiveSelectionForeground": text.fg_muted,
     "list.inactiveSelectionIconForeground": text.fg_muted,
-    "list.hoverBackground": state.hover,
+    "list.hoverBackground": o.hover,
     "list.hoverForeground": text.fg,
-    "list.focusBackground": overlayHex(overlay.selected),
+    "list.focusBackground": o.selected,
     "list.focusForeground": text.fg,
-    "list.focusOutline": accent,
-    "list.focusHighlightForeground": accent,
-    "list.dropBackground": state.active,
-    "list.highlightForeground": accent,
+    "list.focusOutline": frame.accent_text,
+    "list.focusHighlightForeground": frame.accent_text,
+    "list.dropBackground": o.active,
+    "list.highlightForeground": frame.accent_text,
     "list.errorForeground": semantic.danger,
     "list.warningForeground": semantic.warning,
-    "list.deemphasizedForeground": text.fg_subtle,
+    "list.deemphasizedForeground": text.fg_muted,
     "list.invalidItemForeground": semantic.danger,
     "tree.indentGuidesStroke": border.subtle,
     "tree.inactiveIndentGuidesStroke": border.subtle,
@@ -358,20 +323,20 @@ function buildWorkbenchColors(tokens, flavor, variant) {
 
     // scrollbar
     "scrollbar.shadow": surface.bg_scrim,
-    "scrollbarSlider.background": withAlpha(text.fg_subtle, subtleAlpha),
-    "scrollbarSlider.hoverBackground": withAlpha(text.fg_subtle, ALPHA.a50),
-    "scrollbarSlider.activeBackground": withAlpha(text.fg_subtle, ALPHA.a70),
+    "scrollbarSlider.background": o.slider,
+    "scrollbarSlider.hoverBackground": o.slider_hover,
+    "scrollbarSlider.activeBackground": o.slider_active,
 
     // minimap
     "minimap.background": surface.bg,
-    "minimap.findMatchHighlight": withAlpha(accent, ALPHA.a40),
-    "minimap.selectionHighlight": withAlpha(accent, ALPHA.a25),
+    "minimap.findMatchHighlight": o.mark,
+    "minimap.selectionHighlight": o.minimap_selection,
     "minimap.errorHighlight": semantic.danger,
     "minimap.warningHighlight": semantic.warning,
-    "minimap.selectionOccurrenceHighlight": withAlpha(accent, ALPHA.a20),
-    "minimapSlider.background": withAlpha(text.fg_subtle, ALPHA.a20),
-    "minimapSlider.hoverBackground": withAlpha(text.fg_subtle, ALPHA.a30),
-    "minimapSlider.activeBackground": withAlpha(text.fg_subtle, ALPHA.a50),
+    "minimap.selectionOccurrenceHighlight": o.minimap_occurrence,
+    "minimapSlider.background": o.minimap_slider,
+    "minimapSlider.hoverBackground": o.minimap_slider_hover,
+    "minimapSlider.activeBackground": o.minimap_slider_active,
     "minimapGutter.addedBackground": semantic.success,
     "minimapGutter.modifiedBackground": semantic.info,
     "minimapGutter.deletedBackground": semantic.danger,
@@ -396,30 +361,27 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "notificationsWarningIcon.foreground": semantic.warning,
     "notificationsInfoIcon.foreground": semantic.info,
 
-    // panel (terminal/output/etc container) — uses bg_sunk, same as the
-    // sidebar/activity bar/status bar, so the whole non-editing "chrome"
-    // reads as one visually distinct layer against the editor's bg. Without
-    // this the panel/terminal shared editor.background exactly and the pane
-    // boundary depended on a 1px border alone.
-    "panel.background": surface.bg_sunk,
+    // panel (terminal/output/etc container) — the frame colour, like the
+    // sidebar/activity bar/status bar. VS Code draws the panel's tab row in
+    // panel.background, and that strip of frame is what separates the
+    // terminal from the editor: both share surface.bg (design-system 0.14.0).
+    "panel.background": frame.bg,
     "panel.border": border.subtle,
     "panel.dropBorder": accent,
     "panelTitle.activeBorder": accent,
     "panelTitle.activeForeground": text.fg,
-    "panelTitle.inactiveForeground": text.fg_subtle,
+    "panelTitle.inactiveForeground": text.fg_muted,
     "panelInput.border": border.control,
     "panelSection.border": border.subtle,
-    // Section headers now read as the lighter surface.bg step, inverted from
-    // before, to keep internal contrast now that panel.background is sunk.
+    // Section headers take the grey surface.bg so they read apart from the
+    // coloured panel.background.
     "panelSectionHeader.background": surface.bg,
     "panelSectionHeader.foreground": text.fg,
 
-    // terminal — background uses surface.bg_terminal (design-system 0.6.0+),
-    // the first surface tier verified against all 16 ansi.* colors per
-    // flavor. It's distinct from editor.background (surface.bg): an alias to
-    // bg_sunk on dark flavors, bg_soft on light flavors, chosen specifically
-    // because every other surface tier collides with some ansi.* slot on at
-    // least one flavor. See vivid-life-design-system issue #5 and CLAUDE.md.
+    // terminal — background uses surface.bg_terminal, the surface every
+    // ansi.* colour is gated against. Since design-system 0.14.0 it equals
+    // surface.bg on every flavor; the name is the contract, so keep reading
+    // it. See CLAUDE.md.
     "terminal.foreground": text.fg,
     "terminal.background": surface.bg_terminal,
     "terminal.border": border.subtle,
@@ -427,11 +389,9 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "terminal.selectionForeground": overlay.selection.terminal.foreground,
     "terminal.inactiveSelectionBackground":
       overlay.inactive_selection.terminal.flat,
-    "terminal.findMatchBackground": overlayHex(overlay.find_match),
+    "terminal.findMatchBackground": o.find_match,
     "terminal.findMatchBorder": overlay.find_match.border,
-    "terminal.findMatchHighlightBackground": overlayHex(
-      overlay.find_match_other,
-    ),
+    "terminal.findMatchHighlightBackground": o.find_match_other,
     "terminal.findMatchHighlightBorder": overlay.find_match_other.border,
     "terminalCursor.foreground": accent,
     "terminalCursor.background": surface.bg_terminal,
@@ -462,48 +422,38 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "gitDecoration.conflictingResourceForeground": semantic.warning,
     "gitDecoration.stageModifiedResourceForeground": semantic.warning,
     "gitDecoration.stageDeletedResourceForeground": semantic.danger,
-    "gitDecoration.submoduleResourceForeground": text.fg_subtle,
+    "gitDecoration.submoduleResourceForeground": text.fg_muted,
 
     // diff editor
-    "diffEditor.insertedTextBackground": overlayHex(overlay.diff_inserted_text),
-    "diffEditor.removedTextBackground": overlayHex(overlay.diff_removed_text),
-    "diffEditor.insertedLineBackground": overlayHex(overlay.diff_inserted_line),
-    "diffEditor.removedLineBackground": overlayHex(overlay.diff_removed_line),
-    "diffEditorGutter.insertedLineBackground": overlayHex(
-      overlay.diff_inserted_gutter,
-    ),
-    "diffEditorGutter.removedLineBackground": overlayHex(
-      overlay.diff_removed_gutter,
-    ),
-    "diffEditorOverview.insertedForeground": withAlpha(
-      semantic.success,
-      ALPHA.a40,
-    ),
-    "diffEditorOverview.removedForeground": withAlpha(
-      semantic.danger,
-      ALPHA.a40,
-    ),
+    "diffEditor.insertedTextBackground": o.diff_inserted_text,
+    "diffEditor.removedTextBackground": o.diff_removed_text,
+    "diffEditor.insertedLineBackground": o.diff_inserted_line,
+    "diffEditor.removedLineBackground": o.diff_removed_line,
+    "diffEditorGutter.insertedLineBackground": o.diff_inserted_gutter,
+    "diffEditorGutter.removedLineBackground": o.diff_removed_gutter,
+    "diffEditorOverview.insertedForeground": o.mark_inserted,
+    "diffEditorOverview.removedForeground": o.mark_removed,
 
     // merge conflict
-    "merge.currentHeaderBackground": withAlpha(semantic.info, ALPHA.a30),
-    "merge.currentContentBackground": withAlpha(semantic.info, ALPHA.a15),
-    "merge.incomingHeaderBackground": withAlpha(semantic.success, ALPHA.a30),
-    "merge.incomingContentBackground": withAlpha(semantic.success, ALPHA.a15),
-    "merge.commonHeaderBackground": withAlpha(text.fg_subtle, ALPHA.a30),
-    "merge.commonContentBackground": withAlpha(text.fg_subtle, ALPHA.a15),
+    "merge.currentHeaderBackground": o.merge_current_header,
+    "merge.currentContentBackground": o.merge_current,
+    "merge.incomingHeaderBackground": o.merge_incoming_header,
+    "merge.incomingContentBackground": o.diff_inserted_line,
+    "merge.commonHeaderBackground": o.merge_common_header,
+    "merge.commonContentBackground": o.line_highlight,
     "merge.border": border.subtle,
 
     // peek view
     "peekView.border": accent,
     "peekViewEditor.background": surface.bg,
-    "peekViewEditor.matchHighlightBackground": withAlpha(accent, ALPHA.a30),
+    "peekViewEditor.matchHighlightBackground": o.symbol_highlight,
     "peekViewEditor.matchHighlightBorder": accent,
     "peekViewEditorGutter.background": surface.bg,
     "peekViewResult.background": surface.bg_sunk,
     "peekViewResult.fileForeground": text.fg,
     "peekViewResult.lineForeground": text.fg_muted,
-    "peekViewResult.matchHighlightBackground": withAlpha(accent, ALPHA.a30),
-    "peekViewResult.selectionBackground": overlayHex(overlay.selected),
+    "peekViewResult.matchHighlightBackground": o.symbol_highlight,
+    "peekViewResult.selectionBackground": o.selected,
     "peekViewResult.selectionForeground": text.fg,
     "peekViewTitle.background": surface.bg_sunk,
     "peekViewTitleDescription.foreground": text.fg_subtle,
@@ -526,7 +476,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "editorSuggestWidget.foreground": text.fg,
     "editorSuggestWidget.highlightForeground": accent,
     "editorSuggestWidget.focusHighlightForeground": accent,
-    "editorSuggestWidget.selectedBackground": overlayHex(overlay.selected),
+    "editorSuggestWidget.selectedBackground": o.selected,
     "editorSuggestWidget.selectedForeground": text.fg,
     "editorSuggestWidget.selectedIconForeground": accent,
     "editorHoverWidget.background": surface.bg_overlay,
@@ -537,7 +487,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // quick input (Cmd+P, Cmd+Shift+P)
     "quickInput.background": surface.bg_overlay,
     "quickInput.foreground": text.fg,
-    "quickInputList.focusBackground": overlayHex(overlay.selected),
+    "quickInputList.focusBackground": o.selected,
     "quickInputList.focusForeground": text.fg,
     "quickInputList.focusIconForeground": accent,
     "quickInputTitle.background": surface.bg_sunk,
@@ -589,14 +539,8 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     "debugConsole.errorForeground": semantic.danger,
     "debugConsole.sourceForeground": text.fg_muted,
     "debugConsoleInputIcon.foreground": accent,
-    "editor.stackFrameHighlightBackground": withAlpha(
-      semantic.warning,
-      ALPHA.a15,
-    ),
-    "editor.focusedStackFrameHighlightBackground": withAlpha(
-      semantic.warning,
-      ALPHA.a25,
-    ),
+    "editor.stackFrameHighlightBackground": o.stack_frame,
+    "editor.focusedStackFrameHighlightBackground": o.stack_frame_focused,
 
     // problems
     "problemsErrorIcon.foreground": semantic.danger,
@@ -623,30 +567,31 @@ function buildWorkbenchColors(tokens, flavor, variant) {
 
     // notebook
     "notebook.cellBorderColor": border.subtle,
-    "notebook.cellHoverBackground": state.hover,
+    // Cell backgrounds sit behind code, so they take the code overlay
+    // line_highlight rather than the hover wash.
+    "notebook.cellHoverBackground": o.line_highlight,
     "notebook.cellInsertionIndicator": accent,
-    "notebook.cellStatusBarItemHoverBackground": state.hover,
+    "notebook.cellStatusBarItemHoverBackground": o.hover,
     "notebook.cellToolbarSeparator": border.subtle,
     "notebook.editorBackground": surface.bg,
-    "notebook.focusedCellBackground": state.hover,
+    "notebook.focusedCellBackground": o.line_highlight,
     "notebook.focusedCellBorder": accent,
     "notebook.focusedEditorBorder": accent,
     "notebook.inactiveFocusedCellBorder": border.default,
     "notebook.inactiveSelectedCellBorder": border.default,
     "notebook.outputContainerBackgroundColor": surface.bg_sunk,
-    "notebook.selectedCellBackground": overlayHex(overlay.selected),
+    "notebook.selectedCellBackground": o.selected,
     "notebook.selectedCellBorder": border.default,
-    "notebook.symbolHighlightBackground": withAlpha(accent, ALPHA.a15),
+    "notebook.symbolHighlightBackground": o.highlight,
 
-    // chat — the chat view renders on bg_sunk in the sidebar/panel but on
-    // surface.bg when popped out as an editor tab. bg_soft is the only tier
-    // that reads as raised against both (see tab.hoverBackground above, which
-    // relies on the same property), so bubble/code surfaces use it rather
-    // than bg/bg_sunk directly.
+    // chat — the chat view renders on the frame in the sidebar/panel but on
+    // surface.bg when popped out as an editor tab. bg_soft reads as raised
+    // against both (and is the foundation's fill for anything on the frame),
+    // so bubble/code surfaces use it rather than bg or the frame directly.
     "chat.requestBorder": border.subtle,
     "chat.requestBackground": surface.bg_soft,
     "chat.requestBubbleBackground": surface.bg_soft,
-    "chat.requestBubbleHoverBackground": withAlpha(accent, ALPHA.a10),
+    "chat.requestBubbleHoverBackground": o.hover,
     "chat.requestCodeBorder": border.default,
     "chat.checkpointSeparator": border.subtle,
     "chat.thinkingShimmer": accent,
@@ -657,7 +602,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // stays outside variant_hues so it can't collide with the accent.
     "chat.avatarBackground": ansi.cyan,
     "chat.avatarForeground": accentOn,
-    "chat.slashCommandBackground": withAlpha(ansi.cyan, ALPHA.a20),
+    "chat.slashCommandBackground": o.slash_command,
     "chat.slashCommandForeground": ansi.cyan,
     "chat.editedFileForeground": accent,
     "chat.linesAddedForeground": semantic.success,
@@ -667,7 +612,7 @@ function buildWorkbenchColors(tokens, flavor, variant) {
     // extensions
     "extensionButton.prominentBackground": accent,
     "extensionButton.prominentForeground": accentOn,
-    "extensionButton.prominentHoverBackground": withAlpha(accent, ALPHA.a90),
+    "extensionButton.prominentHoverBackground": overlay.button_hover.flat,
     "extensionBadge.remoteBackground": accent,
     "extensionBadge.remoteForeground": accentOn,
     "extensionIcon.starForeground": semantic.warning,

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- design-system dependency bumped to 0.14.1; all 24 themes regenerated.
+- The variant's colour now frames the grey work areas: title bar, activity bar, tab strip and inactive tabs, sidebar, status bar and the panel container use the foundation's new `frame` colour instead of `bg_sunk`. Editor and terminal share one background; the panel's tab row, in the frame colour, separates them.
+- Text on the frame follows the foundation's rules and the approved frame mockups: title-bar and status-bar text is `fg_muted`, the sidebar section header sits on the frame instead of a grey strip, and inactive tab, activity-bar, title-bar and panel-title labels, `descriptionForeground`, `list.deemphasizedForeground` and submodule git decorations move from `fg_subtle` to `fg_muted`; list highlight text, the selected-row icon and the list focus outline use `frame.accent_text`.
+- Every translucent colour comes from a foundation overlay recipe; the port's own alpha table is gone. Selection highlights, bracket and symbol highlights, find range, merge-conflict and stack-frame backgrounds, input validation, scrollbar and minimap sliders, overview-ruler marks and the chat slash-command chip all change slightly. Hover and pressed states (lists, tabs, menu bar, status-bar items, chat bubbles) use the gated `hover` / `active` washes, so tab hover is now visible. Notebook cell hover/focus use `line_highlight` instead of a hover wash behind code.
+- `button.hoverBackground` and `extensionButton.prominentHoverBackground` use the accent's emphasis step (lighter on dark flavors) instead of the accent at 90 %; `statusBarItem.prominentHoverBackground` uses `semantic.warning`'s emphasis step instead of black at 70 % / 40 %. `activityBar.activeBorder` is the plain accent.
+- Dark-flavor selections are now a visible accent tint (upstream change).
+
 ## [0.3.1] - 2026-10-14
 
 ### Changed
