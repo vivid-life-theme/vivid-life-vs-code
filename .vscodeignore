@@ -3,6 +3,7 @@
 .gitignore
 .vscodeignore
 .claude/**
+.vscode/**
 node_modules/**
 src/**
 build.mjs
