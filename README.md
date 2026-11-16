@@ -39,7 +39,7 @@ A multi-flavor color theme for VS Code (Visual Studio Code). **4 flavors × 6 va
 
 ## Flavors
 
-In time-of-day order. The canvas is the editor background; the integrated terminal uses the foundation's terminal tier (`#0a0a0a` / `#333333` / `#d4d4d4` / `#ffffff`), the same backgrounds the standalone terminal ports use.
+In time-of-day order. The canvas is the editor background, and the integrated terminal shares it: the panel's tab row, in the variant's frame color, is what separates the two. The standalone terminal ports use the same backgrounds.
 
 | Flavor       | Type  | Canvas    |
 | ------------ | ----- | --------- |
